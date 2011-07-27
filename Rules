@@ -56,8 +56,12 @@ route '/javascripts/*/' do
   item.identifier.chop + '.js'
 end
 
-route '*' do
+route '/' do
   item.identifier + 'index.html'
+end
+
+route '*' do
+  item.identifier.chop + '.html'
 end
 
 layout '*', :haml, haml_options
