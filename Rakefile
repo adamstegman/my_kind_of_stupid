@@ -37,6 +37,8 @@ namespace :optimize do
   #
   desc 'Compress all stylesheet files'
   task :stylesheets do
+    require 'bundler'
+    Bundler.setup
     require 'yui/compressor'
     compressor = YUI::CssCompressor.new
 
@@ -55,6 +57,8 @@ namespace :optimize do
   #
   desc 'Compress all javascript files'
   task :javascripts do
+    require 'bundler'
+    Bundler.setup
     require 'yui/compressor'
     compressor = YUI::JavaScriptCompressor.new(:munge => true)
 
