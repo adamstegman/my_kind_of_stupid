@@ -6,8 +6,25 @@
     %meta{"http-equiv" => "X-UA-Compatible", :content => "IE=edge"}
     %meta{:name => "keywords", :content => @item[:keywords] }/
     %meta{:name => "description", :content => @item[:description] }/
-    %title= @item[:title]
+    %title= "My Kind of Stupid: #{@item[:title]}"
 
     %link{:type => 'text/css', :href => '/stylesheets/application.css', :rel => 'stylesheet'}
   %body
-    = yield
+    %header
+      .container
+        %hgroup
+          %h1 My Kind of Stupid
+          %h2 Web development, user interfaces, Ruby on Rails, and other development topics.
+    .content
+      .container
+        %article
+          %hgroup
+            %h2= @item[:title]
+            - if @item[:subtitle]
+              %h3= @item[:subtitle]
+          = yield
+    %footer
+      .container
+        %section.about
+          %hgroup
+            %h2 About Me

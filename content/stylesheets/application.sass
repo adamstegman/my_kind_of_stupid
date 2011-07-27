@@ -1,9 +1,56 @@
-// See http://compass-style.org/reference/compass/css3/ for more modules
-@import "compass/reset"
-@import "compass/css3/border-radius"
-@import "compass/css3/box-shadow"
-@import "compass/css3/text-shadow"
-@import "compass/css3/gradient"
+@import "compass/reset/utilities"
+
+// Colors
+$body_background: #fff
+$frame_background: #361c07
+// Text
+$body_color: #333
+$frame_color: #ccc
+$body_font: Palatino, Palatino Linotype, Cambria, Georgia, serif
+$heading_font: GillSans, Calibri, Trebuchet, sans-serif
+
+@include reset-html5
+
+/* Reset */
+html,body
+  @include reset-box-model
 
 body
-  background-color: #ffffff
+  background: $frame_background
+  color: $frame_color
+  font-family: $body_font
+
+header, footer
+  padding: 1em
+
+.content
+  padding: 1em
+  
+header
+  h2
+    margin-bottom: 0
+
+h1, h2, h3, h4, h5, h6
+  margin: 0 0 0.33em 0
+
+h1
+  font-size: 3em
+
+p
+  margin-bottom: 0
+
+/* Layout */
+.container
+  margin: 0 auto
+  width: 960px
+
+/* Styling */
+header, footer
+  background: transparent
+
+h1, h2, h3, h4, h5, h6
+  font-family: $heading_font
+  
+.content
+  background: $body_background
+  color: $body_color
