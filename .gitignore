@@ -1,6 +1,9 @@
+.bundle
 .DS_Store
 .rvmrc
 .sass-cache
 *.log
+bin
 output
 tmp
+vendor
