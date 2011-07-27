@@ -1,5 +1,13 @@
 ---
-title: My Site
+title: Adam Stegman
+subtitle: About Me
+styles:
+  - about
 ---
-%h1= @item[:title]
-%p= 'The quick brown fox jumped over the lazy dog.'
+.bio.short
+  %img.adamstegman{"src" => "/images/adamstegman.jpg", "width" => "200", "height" => "150"}
+  %p= "I work for Cerner in Kansas City. I got my BS in CS at Kansas State University and graduated in 2009. I've worked in several languages, but I enjoy Ruby the most currently. I like to focus on web development and user experience."
+.bio.long
+  %p= "I am very excited by the Internet and how easy it is today to get a project started. I love web development, mostly with Ruby on Rails, but I enjoy the core technologies of HTML, CSS, and JavaScript."
+  %p= "I started with simple MUD-like dungeons written in QBasic when I was a child and moved on to more complex, but useful, .NET applications in college. New ideas and projects excite me to no end, though it's always been challenging to drive a project through to a polished end-state."
+  %p= "I'm an evangelist for best practices and efficiencies to my co-workers."

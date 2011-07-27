@@ -9,6 +9,9 @@
     %title= "#{@item[:title]}#{": #{@item[:subtitle]}" if @item[:subtitle]} - My Kind of Stupid"
 
     %link{:type => 'text/css', :href => '/stylesheets/application.css', :rel => 'stylesheet'}
+    - if @item[:styles]
+      - @item[:styles].each do |stylesheet|
+        %link{:type => 'text/css', :href => "/stylesheets/#{stylesheet}.css", :rel => 'stylesheet'}
   %body
     %header
       .container
