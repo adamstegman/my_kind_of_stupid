@@ -38,6 +38,9 @@ compile '*' do
   if item[:extension] == 'haml' 
     filter :haml, haml_options
     layout 'default'
+  elsif item[:extension] == 'md'
+    filter :maruku
+    layout 'default'
   end
 end
 
