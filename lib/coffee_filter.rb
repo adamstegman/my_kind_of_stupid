@@ -1,5 +1,4 @@
 require 'open3'
-require 'win32/open3' if RUBY_PLATFORM.match /win32/
 
 class CoffeeFilter < Nanoc3::Filter
   identifier :coffee
