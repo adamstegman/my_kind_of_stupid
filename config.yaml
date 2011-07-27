@@ -21,9 +21,9 @@ index_filenames:
 - index.html
 enable_output_diff: false
 base_url: http://localhost:3000
-title: Website Title
-author_name: Your Name
-author_uri: Your Link
+title: My Kind of Stupid
+author_name: Adam Stegman
+author_uri: http://about.me/adamstegman
 data_sources: 
 - type: filesystem_unified
   items_root: /
