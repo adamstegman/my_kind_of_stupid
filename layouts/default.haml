@@ -6,7 +6,7 @@
     %meta{"http-equiv" => "X-UA-Compatible", :content => "IE=edge"}
     %meta{:name => "keywords", :content => @item[:keywords] }/
     %meta{:name => "description", :content => @item[:description] }/
-    %title= "My Kind of Stupid: #{@item[:title]}"
+    %title= "#{@item[:title]}#{": #{@item[:subtitle]}" if @item[:subtitle]} - My Kind of Stupid"
 
     %link{:type => 'text/css', :href => '/stylesheets/application.css', :rel => 'stylesheet'}
   %body
