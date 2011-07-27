@@ -10,7 +10,7 @@ require 'yaml'
 ##
 # Configurable Constants
 #
-BASE_URL = 'http://myapp.herokuapp.com'
+BASE_URL = 'http://my-kind-of-stupid.herokuapp.com'
 
 ##
 # Heroku-based Deployment
