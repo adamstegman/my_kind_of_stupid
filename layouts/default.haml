@@ -23,3 +23,15 @@
       .container
         = yield
     %footer
+      .container
+        %section.author
+          %h2
+            Written by
+            %a{:rel => 'author', :href => 'http://adamstegman.com/'} Adam Stegman
+          %ul.contact
+            %li
+              %a{:href => 'http://twitter.com/adamstegman'} Follow me on Twitter
+            %li
+              %a{:href => 'http://github.com/adamstegman'} Follow me on Github
+            %li
+              %a{:href => 'mailto:me@adamstegman.com'} Email me
