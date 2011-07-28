@@ -3,6 +3,7 @@ title: This is why we can't have nice things.
 link: http://blogs.hbr.org/bregman/2010/06/why-i-returned-my-ipad.html
 created_at: 2010-06-17T15:08Z
 created_at_text: June 17, 2010, 10:08 am
+kind: article
 ---
 The top-voted comments here are a great example of why people are agreeing with [John Gruber's assessment of comments][whats_fair].
 
