@@ -4,3 +4,4 @@
 # http://nanoc.stoneship.org/docs/4-basic-concepts/#helpers
 
 include Nanoc3::Helpers::Rendering
+include Nanoc3::Helpers::Blogging

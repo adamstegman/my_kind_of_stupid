@@ -1,3 +1,24 @@
 ---
 title: Articles
 ---
+%ol.article-list
+  - sorted_articles.each do |article|
+    %li
+      %article{:itemscope => true, :itemtype => 'http://www.schema.org/BlogPosting'}
+        %header
+          %hgroup
+            - if article[:link]
+              %h2
+                %a{:href => article[:link], :itemprop => 'name headline'}= article[:title]
+            - else
+              %h2{:itemprop => 'name'}= article[:title]
+            - if article[:subtitle]
+              %h3= article[:subtitle]
+        .article-body{:itemprop => 'articleBody'}
+          = article.compiled_content
+        %footer
+          %p.permalink
+            %a{:itemprop => 'url', :href => url_for(article)} Permalink
+          .published
+            Published at
+            %time{:datetime => article[:created_at], :pubdate => true, :itemprop => 'datePublished'}= article[:created_at_text]
