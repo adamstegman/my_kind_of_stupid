@@ -38,3 +38,15 @@
               Published at
               %time{:datetime => @item[:created_at], :pubdate => true, :itemprop => 'datePublished'}= @item[:created_at_text]
     %footer
+      .container
+        %section.author
+          %h2
+            Written by
+            %a{:rel => 'author', :href => 'http://adamstegman.com/'} Adam Stegman
+          %ul.contact
+            %li
+              %a{:href => 'http://twitter.com/adamstegman'} Follow me on Twitter
+            %li
+              %a{:href => 'http://github.com/adamstegman'} Follow me on Github
+            %li
+              %a{:href => 'mailto:&#109;&#101;&#64;&#97;&#100;&#97;&#109;&#115;&#116;&#101;&#103;&#109;&#97;&#110;&#46;&#99;&#111;&#109;'} Email me

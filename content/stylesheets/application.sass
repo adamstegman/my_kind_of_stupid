@@ -25,14 +25,15 @@ body
 header, footer
   padding: 1em 0
 
-a.title
+a
   color: $frame_color
+  &:visited, &:hover, &:focus
+    color: $frame_color
+
+a.title
   text-decoration: none
   &:visited, &:hover
-    color: $frame_color
     text-decoration: none
-  &:focus
-    color: $frame_color
 
 .content
   padding: 1em 0
@@ -94,3 +95,10 @@ article
     .permalink, .published
       display: inline-block
       margin: 0 1em 0 0
+
+.author
+  .contact
+    list-style-type: none
+    padding: 0
+    li
+      margin: 0.25em 0
