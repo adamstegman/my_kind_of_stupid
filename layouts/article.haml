@@ -21,5 +21,18 @@
           %h2 Web development, user interfaces, Ruby on Rails, and other development topics.
     .content
       .container
-        - # TODO: article list
+        %article
+          %hgroup
+            - if @item[:link]
+              %h2
+                %a{:href => @item[:link]}= @item[:title]
+            - else
+              %h2= @item[:title]
+            - if @item[:subtitle]
+              %h3= @item[:subtitle]
+          = yield
+          %footer
+            .published
+              Published at
+              %time{:datetime => @item[:published_at], :pubdate => nil}= @item[:published_at_text]
     %footer

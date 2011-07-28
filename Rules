@@ -40,7 +40,7 @@ compile '*' do
     layout 'default'
   elsif item[:extension] == 'md'
     filter :maruku
-    layout 'default'
+    layout 'article'
   end
 end
 
