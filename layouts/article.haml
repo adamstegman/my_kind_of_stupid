@@ -26,7 +26,8 @@
             %hgroup
               - if @item[:link]
                 %h2
-                  %a{:href => @item[:link], :itemprop => 'name headline'}= @item[:title]
+                  %a{:href => @item[:link]}
+                    %span{:itemprop => 'name headline'}= @item[:title]
               - else
                 %h2{:itemprop => 'name'}= @item[:title]
               - if @item[:subtitle]
