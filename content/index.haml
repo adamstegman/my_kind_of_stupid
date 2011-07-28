@@ -9,7 +9,8 @@ title: Articles
           %hgroup
             - if article[:link]
               %h2
-                %a{:href => article[:link], :itemprop => 'name headline'}= article[:title]
+                %a{:href => article[:link]}
+                  %span{:itemprop => 'name headline'}= article[:title]
             - else
               %h2{:itemprop => 'name'}= article[:title]
             - if article[:subtitle]
