@@ -36,5 +36,5 @@
           %footer
             .published
               Published at
-              %time{:datetime => @item[:published_at], :pubdate => true, :itemprop => 'datePublished'}= @item[:published_at_text]
+              %time{:datetime => @item[:created_at], :pubdate => true, :itemprop => 'datePublished'}= @item[:created_at_text]
     %footer
