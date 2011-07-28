@@ -21,19 +21,20 @@
           %h2 Web development, user interfaces, Ruby on Rails, and other development topics.
     .content
       .container
-        %article
+        %article{:itemscope => true, :itemtype => 'http://www.schema.org/BlogPosting'}
           %header
             %hgroup
               - if @item[:link]
                 %h2
-                  %a{:href => @item[:link]}= @item[:title]
+                  %a{:href => @item[:link], :itemprop => 'name headline'}= @item[:title]
               - else
-                %h2= @item[:title]
+                %h2{:itemprop => 'name'}= @item[:title]
               - if @item[:subtitle]
                 %h3= @item[:subtitle]
-          = yield
+          .article-body{:itemprop => 'articleBody'}
+            = yield
           %footer
             .published
               Published at
-              %time{:datetime => @item[:published_at], :pubdate => nil}= @item[:published_at_text]
+              %time{:datetime => @item[:published_at], :pubdate => true, :itemprop => 'datePublished'}= @item[:published_at_text]
     %footer
