@@ -22,14 +22,15 @@
     .content
       .container
         %article
-          %hgroup
-            - if @item[:link]
-              %h2
-                %a{:href => @item[:link]}= @item[:title]
-            - else
-              %h2= @item[:title]
-            - if @item[:subtitle]
-              %h3= @item[:subtitle]
+          %header
+            %hgroup
+              - if @item[:link]
+                %h2
+                  %a{:href => @item[:link]}= @item[:title]
+              - else
+                %h2= @item[:title]
+              - if @item[:subtitle]
+                %h3= @item[:subtitle]
           = yield
           %footer
             .published

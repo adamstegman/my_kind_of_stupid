@@ -23,7 +23,7 @@ body
   font-family: $body_font
 
 header, footer
-  padding: 1em
+  padding: 1em 0
 
 a.title
   color: $frame_color
@@ -35,14 +35,13 @@ a.title
     color: $frame_color
 
 .content
-  padding: 1em
+  padding: 1em 0
   
-header
-  h2
-    margin-bottom: 0
-
-h1, h2, h3, h4, h5, h6
+h1
   margin: 0 0 0.33em 0
+
+h2, h3, h4, h5, h6
+  margin: 0.33em 0 0.33em 0
 
 h1
   font-size: 3em
@@ -65,3 +64,16 @@ h1, h2, h3, h4, h5, h6
 .content
   background: $body_background
   color: $body_color
+
+article
+  a
+    color: #b00
+    &:visited, &:hover, &:focus
+      color: #b00
+  header, footer
+    padding: 0
+  footer
+    color: #aaa
+    font-family: $heading_font
+    font-size: 0.75em
+    margin: 1em 0 0 0
