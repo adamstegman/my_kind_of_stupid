@@ -34,6 +34,10 @@ compile '/javascripts/*/' do
   end
 end
 
+compile '/feed/' do
+  filter :erb
+end
+
 compile '*' do
   if item[:extension] == 'haml' 
     filter :haml, haml_options
@@ -62,6 +66,10 @@ end
 
 route '/' do
   item.identifier + 'index.html'
+end
+
+route '/feed/' do
+  '/feed.xml'
 end
 
 route '*' do
