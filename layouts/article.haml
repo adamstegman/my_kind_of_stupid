@@ -33,7 +33,7 @@
               - if @item[:subtitle]
                 %h3= @item[:subtitle]
           .article-body{:itemprop => 'articleBody'}
-            = yield
+            = preserve yield
           %footer
             .published
               Published at
