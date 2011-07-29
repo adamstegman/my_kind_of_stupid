@@ -19,7 +19,15 @@
         %hgroup
           %h1
             %a{:href => '/', :class => 'title'} My Kind of Stupid
-          %h2 Web development, user interfaces, Ruby on Rails, and other development topics.
+          %h2 Web development, user interfaces, and other development topics.
+        %nav
+          %ul.nav-list
+            %li
+              %a{:href => 'http://adamstegman.com/'} Adam Stegman
+            %li
+              %a{:rel => 'me', :href => 'http://twitter.com/adamstegman'} Twitter
+            %li
+              %a{:rel => 'me', :href => 'http://github.com/adamstegman'} Github
     .content
       .container
         = yield

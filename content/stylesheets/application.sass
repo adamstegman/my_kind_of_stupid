@@ -63,6 +63,19 @@ p
 header, footer
   background: transparent
 
+header  
+  nav
+    overflow: hidden
+    .nav-list
+      list-style-type: none
+      margin: 0
+      padding: 0
+      li
+        float: left
+        margin: 1em 1em
+        &:first-child
+          margin-left: 0
+
 h1, h2, h3, h4, h5, h6
   font-family: $heading_font
   
