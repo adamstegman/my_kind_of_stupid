@@ -1,6 +1,6 @@
 ---
 title: Silence Test::Unit tests
-created_at: 2011-04-19T05:20Z
+created_at: 2011-04-19T04:20Z
 created_at_text: April 18, 2011, 11:20 pm
 kind: article
 ---
