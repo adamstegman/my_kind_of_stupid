@@ -23,7 +23,7 @@ enable_output_diff: false
 base_url: http://localhost:3000
 title: My Kind of Stupid
 author_name: Adam Stegman
-author_uri: http://about.me/adamstegman
+author_uri: http://adamstegman.com/
 data_sources: 
 - type: filesystem_unified
   items_root: /
