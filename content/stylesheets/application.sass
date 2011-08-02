@@ -57,7 +57,22 @@ p
 /* Layout */
 .container
   margin: 0 auto
-  width: 960px
+  width: 310px
+
+@media screen and (min-width: 480px)
+  .container
+    width: 460px
+
+@media screen and (min-width: 760px)
+  .container
+    width: 740px
+
+@media screen and (min-width: 980px)
+  .container
+    width: 960px
+
+pre
+  word-wrap: break-word
 
 /* Styling */
 header, footer
