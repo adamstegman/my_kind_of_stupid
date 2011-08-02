@@ -16,7 +16,7 @@ title: Articles
             - if article[:subtitle]
               %h3= article[:subtitle]
         .article-body{:itemprop => 'articleBody'}
-          = article.compiled_content
+          = preserve article.compiled_content
         %footer
           %p.permalink
             %a{:itemprop => 'url', :href => url_for(article)} Permalink
