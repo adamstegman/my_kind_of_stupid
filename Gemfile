@@ -32,3 +32,8 @@ group :development do
   gem 'rb-fsevent'
   gem 'growl'
 end
+
+group :deployment do
+  gem 'nokogiri'
+  gem 'twitter', '~>1.6.2'
+end
