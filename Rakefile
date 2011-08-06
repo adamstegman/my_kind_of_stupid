@@ -183,7 +183,7 @@ end
 # @return [Array<String>] paths to changed files
 #
 def changed_files
-  log = %x[git log origin/master..master --stat --pretty=oneline]
+  log = %x[git log heroku/master..master --stat --pretty=oneline]
   log.split($/).map {|line| match = /\s+(content\/.*)\s+\|/.match(line) && match[1]}.compact
 end
 
