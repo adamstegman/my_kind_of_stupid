@@ -31,9 +31,8 @@ group :development do
   gem 'guard-nanoc'
   gem 'rb-fsevent'
   gem 'growl'
-end
 
-group :deployment do
+  # For deployment-time tweeting
   gem 'nokogiri'
   gem 'twitter', '~>1.6.2'
 end
