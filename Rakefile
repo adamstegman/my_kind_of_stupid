@@ -2,7 +2,7 @@
 
 require 'yaml'
 require 'bundler/setup'
-Bundler.require :deployment
+Bundler.require :development
 
 ##
 # Load Nanoc3 tasks for additional validators
