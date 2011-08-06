@@ -184,7 +184,7 @@ end
 #
 def changed_files
   log = %x[git log origin/master..master --stat --pretty=oneline]
-  log.split($/).select {|line| line =~ /\|\s+\d+/}.map {|line| /\s+(content\/.*)\s+\|/.match(line)[1]}.compact
+  log.split($/).map {|line| match = /\s+(content\/.*)\s+\|/.match(line) && match[1]}.compact
 end
 
 ##
