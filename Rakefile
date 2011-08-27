@@ -223,7 +223,7 @@ def prepare_tweets_from_files(files)
       end
       if length_remaining > 3
         doc = Nokogiri::HTML(File.read(filepath))
-        body = doc.css('body').last
+        body = doc.css('body .content').last
         snippet = body.text.strip.gsub("\n", '').squeeze(' ')
         if snippet.size > length_remaining - 1 # 1 space afterward
           snippet = "#{snippet[0...length_remaining-4].strip}..."
