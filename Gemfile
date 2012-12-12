@@ -6,6 +6,9 @@ gem 'rake'
 # Nanoc for compiling dynamic code
 gem 'nanoc'
 
+# For spawning a file server to preview the site
+gem 'adsf'
+
 # HAML, Compass, Markdown and Builder for handling all important formats
 gem 'haml'
 gem 'compass'
