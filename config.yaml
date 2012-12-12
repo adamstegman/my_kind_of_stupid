@@ -1,5 +1,5 @@
---- 
-text_extensions: 
+---
+text_extensions:
 - css
 - erb
 - haml
@@ -17,14 +17,14 @@ text_extensions:
 - xml
 - coffee
 output_dir: output
-index_filenames: 
+index_filenames:
 - index.html
 enable_output_diff: false
 base_url: http://localhost:3000
 title: Website Title
 author_name: Your Name
 author_uri: Your Link
-data_sources: 
+data_sources:
 - type: filesystem_unified
   items_root: /
   layouts_root: /

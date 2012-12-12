@@ -10,18 +10,21 @@ require 'yaml'
 ##
 # Configurable Constants
 #
-BASE_URL = 'http://myapp.herokuapp.com'
+BASE_URL = 'https://myrepo.github.com'
+# Switch PAGES_BRANCH to master for a Pages repo (e.g. username.github.com) and make NANOC_BRANCH something else.
+NANOC_BRANCH = 'gh-pages-nanoc'
+PAGES_BRANCH = 'gh-pages'
 
 ##
-# Heroku-based Deployment
+# Github Pages-based Deployment
 #
-# Requires a Heroku Application (a heroku remote) that runs on Celadon Cedar
-#
-desc 'Deploy the website to Heroku using Git.'
+desc 'Deploy the website to Github Pages using Git. Set commit="some message" to set the commit message for the pages branch.'
 task :deploy do
+  ENV['commit'] ||= 'Updated content.'
   prepare!
   compile!
   Rake::Task["optimize:all"].invoke
+  commit!
   deploy!
   revert!
 end
@@ -118,6 +121,8 @@ end
 # Re-compile by removing the output directory and re-compiling
 #
 def compile!
+  change_base_url_to(BASE_URL)
+
   puts "Compiling website.."
   puts %x[rm -rf output]
   puts %x[nanoc compile]
@@ -127,39 +132,47 @@ end
 # Prepares the deployment environment
 #
 def prepare!
-  %x[git checkout master]
-  unless %x[git status] =~ /nothing to commit \(working directory clean\)/
-    puts "Please commit your changes on the master branch before deploying!"
+  unless %x[git status] =~ /nothing to commit/
+    puts "Please commit or stash your changes before deploying!"
     exit 1
   end
-
-  puts "Creating and moving in to \"deployment\" branch.."
-  puts %x[git checkout -b deployment]
-
-  puts "Removing \"output\" directory from .gitignore.."
-  gitignore = File.read(".gitignore")
-  File.open(".gitignore", "w") do |file|
-    file.write(gitignore.gsub("output", ""))
-  end
-
-  change_base_url_to(BASE_URL)
 end
 
 ##
-# Moves back to the "master" branch and removes the "deployment" branch
+# Moves back to the nanoc branch
 #
 def revert!
-  %x[git checkout master]
-  %x[git branch -D deployment]
+  %x[git checkout #{NANOC_BRANCH}]
 end
 
 ##
-# Deploys the application via git to Heroku
+# Commits compiled output.
+#
+def commit!
+  puts "Creating and moving to \"#{PAGES_BRANCH}\" branch.."
+
+  # Create gh-pages branch if necessary
+  unless system("git checkout #{PAGES_BRANCH}")
+    %x[git checkout --orphan #{PAGES_BRANCH}]
+    %x[git ls-files].split("\n").each do |tracked_file|
+      %x[git rm -f #{tracked_file}] unless tracked_file.start_with?('output/')
+    end
+  end
+
+  # Add all output and commit it
+  puts "Adding and committing compiled output for deployment.."
+  Dir['output/*'].each do |output_file|
+    destination = output_file.sub(/\Aoutput\//, '')
+    puts %x[mv "#{output_file}" "#{destination}"]
+    puts %x[git add "#{destination}"]
+  end
+  puts %x[git commit -m "#{ENV['commit'].gsub('"', '\"')}"]
+end
+
+##
+# Deploys the site via git
 #
 def deploy!
-  puts "Adding and committing compiled output for deployment.."
-  puts %x[git add .]
-  puts %x[git commit -a -m "temporary commit for deployment"]
-  puts 'Deploying to Heroku..'
-  puts %x[git push heroku HEAD:master --force]
+  puts 'Pushing to Github..'
+  puts %x[git push origin HEAD:#{PAGES_BRANCH} --force]
 end
