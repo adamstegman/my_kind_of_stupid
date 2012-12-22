@@ -118,17 +118,6 @@ def change_base_url_to(url)
 end
 
 ##
-# Re-compile by removing the output directory and re-compiling
-#
-def compile!
-  change_base_url_to(BASE_URL)
-
-  puts "Compiling website.."
-  puts %x[rm -rf output]
-  puts %x[nanoc compile]
-end
-
-##
 # Prepares the deployment environment
 #
 def prepare!
@@ -139,10 +128,14 @@ def prepare!
 end
 
 ##
-# Moves back to the nanoc branch
+# Re-compile by removing the output directory and re-compiling
 #
-def revert!
-  %x[git checkout #{NANOC_BRANCH}]
+def compile!
+  change_base_url_to(BASE_URL)
+
+  puts "Compiling website.."
+  puts %x[rm -rf output]
+  puts %x[nanoc compile]
 end
 
 ##
@@ -175,4 +168,11 @@ end
 def deploy!
   puts 'Pushing to Github..'
   puts %x[git push origin HEAD:#{PAGES_BRANCH} --force]
+end
+
+##
+# Moves back to the nanoc branch
+#
+def revert!
+  %x[git checkout #{NANOC_BRANCH}]
 end
