@@ -136,6 +136,9 @@ def compile!
   puts "Compiling website.."
   puts %x[rm -rf output]
   puts %x[nanoc compile]
+
+  puts "Reverting code changes..."
+  puts %x[git reset --hard]
 end
 
 ##
