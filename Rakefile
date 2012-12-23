@@ -14,6 +14,10 @@ BASE_URL = 'https://myrepo.github.com'
 # Switch PAGES_BRANCH to master for a Pages repo (e.g. username.github.com) and make NANOC_BRANCH something else.
 NANOC_BRANCH = 'gh-pages-nanoc'
 PAGES_BRANCH = 'gh-pages'
+# A list of files to include in the deployment that are not in the output/ directory.
+ADDITIONAL_FILES = [
+  # 'CNAME'
+]
 
 ##
 # Github Pages-based Deployment
@@ -157,6 +161,9 @@ def commit!
 
   # Add all output and commit it
   puts "Adding and committing compiled output for deployment.."
+  ADDITIONAL_FILES.each do |file|
+    puts %x[git add #{file}]
+  end
   Dir['output/*'].each do |output_file|
     destination = output_file.sub(/\Aoutput\//, '')
     puts %x[mv "#{output_file}" "#{destination}"]
