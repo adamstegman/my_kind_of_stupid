@@ -155,7 +155,7 @@ def commit!
   unless system("git checkout #{PAGES_BRANCH}")
     %x[git checkout --orphan #{PAGES_BRANCH}]
     %x[git ls-files].split("\n").each do |tracked_file|
-      %x[git rm -f #{tracked_file}] unless tracked_file.start_with?('output/')
+      %x[git rm -f #{tracked_file}] unless tracked_file.start_with?('output/') || ADDITIONAL_FILES.include?(tracked_file)
     end
   end
 
