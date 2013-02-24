@@ -16,7 +16,7 @@ NANOC_BRANCH = 'master'
 PAGES_BRANCH = 'gh-pages'
 # A list of files to include in the deployment that are not in the output/ directory.
 ADDITIONAL_FILES = [
-  # 'CNAME'
+  'CNAME'
 ]
 
 ##
