@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding: UTF-8
 
 require 'yaml'
 
@@ -10,9 +10,9 @@ require 'yaml'
 ##
 # Configurable Constants
 #
-BASE_URL = 'https://myrepo.github.com'
+BASE_URL = 'http://blog.adamstegman.com'
 # Switch PAGES_BRANCH to master for a Pages repo (e.g. username.github.com) and make NANOC_BRANCH something else.
-NANOC_BRANCH = 'gh-pages-nanoc'
+NANOC_BRANCH = 'master'
 PAGES_BRANCH = 'gh-pages'
 # A list of files to include in the deployment that are not in the output/ directory.
 ADDITIONAL_FILES = [
