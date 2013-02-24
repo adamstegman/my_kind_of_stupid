@@ -20,10 +20,10 @@ output_dir: output
 index_filenames:
 - index.html
 enable_output_diff: false
-base_url: http://localhost:3000
-title: Website Title
-author_name: Your Name
-author_uri: Your Link
+base_url: http://blog.adamstegman.com
+title: My Kind of Stupid
+author_name: Adam Stegman
+author_uri: http://adamstegman.com/
 data_sources:
 - type: filesystem_unified
   items_root: /

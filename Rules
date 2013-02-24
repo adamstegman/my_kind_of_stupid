@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# coding: UTF-8
 
 require 'compass'
 Compass.add_project_configuration './config/compass.rb'
@@ -34,11 +35,22 @@ compile '/javascripts/*/' do
   end
 end
 
+compile '/feed/' do
+  filter :erb
+end
+
 compile '*' do
-  if item[:extension] == 'haml' 
+  if item[:extension] == 'haml'
     filter :haml, haml_options
     layout 'default'
+  elsif item[:extension] == 'md'
+    filter :maruku
+    layout 'article'
   end
+end
+
+route '/images/favicon/' do
+  '/favicon.ico'
 end
 
 route '/images/*/' do
@@ -53,8 +65,16 @@ route '/javascripts/*/' do
   item.identifier.chop + '.js'
 end
 
-route '*' do
+route '/' do
   item.identifier + 'index.html'
+end
+
+route '/feed/' do
+  '/feed.xml'
+end
+
+route '*' do
+  item.identifier.chop + '.html'
 end
 
 layout '*', :haml, haml_options
