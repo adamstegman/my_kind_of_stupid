@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://blog.adamstegman.com/</id>
+  <title>My Kind of Stupid</title>
+  <updated>2012-10-05T00:20:00Z</updated>
+  <link rel="alternate" href="http://blog.adamstegman.com/"/>
+  <link rel="self" href="http://blog.adamstegman.com/feed.xml"/>
+  <author>
+    <name>Adam Stegman</name>
+    <uri>http://adamstegman.com/</uri>
+  </author>
+  <entry>
+    <id>tag:blog.adamstegman.com,2012-10-05:/code-reviews.html</id>
+    <title type="html">Code Reviews</title>
+    <published>2012-10-05T00:20:00Z</published>
+    <updated>2012-10-05T00:20:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/code-reviews.html"/>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;Imagine if we didn’t judge the author of the code by how few “WTFs” it generated, but instead by how fertile it was for discussion? Or, imagine if every programmer was being judged by what they learned from the discussion. How would that change things? better still, imagine if the “manager&amp;#8217;s” job was to facilitate the learning and get the discussion back on track when it strayed into fixing-the-code territory instead of to judge people by how much they &amp;#8220;contribute.&amp;#8221; That would be a breath of fresh air to most teams.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;An excellent point. Code reviews are valuable for getting eyes on the code, but I agree with Raganwald here that the more valuable outcome is that everyone shares in the learning. I&amp;#8217;ve thought of that as learning &lt;em&gt;about&lt;/em&gt; the work that others are doing, but Raganwald makes a good point that you learn from the &lt;em&gt;discussion&lt;/em&gt; about the work that others are doing.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2012-10-04:/kent-beck-on-pair-programming.html</id>
+    <title type="html">Kent Beck on Pair Programming</title>
+    <published>2012-10-04T01:29:00Z</published>
+    <updated>2012-10-04T01:29:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/kent-beck-on-pair-programming.html"/>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;pair programming works best with a large uncertain search space of problems and solutions. the closer to a solved problem, the less it helps&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;- &lt;a href='https://twitter.com/KentBeck'&gt;Kent Beck&lt;/a&gt; (&lt;a href='https://twitter.com/KentBeck'&gt;@KentBeck&lt;/a&gt;)&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2012-01-06:/implementing-a-mutable-subclass-in-objective-c.html</id>
+    <title type="html">Implementing a Mutable Subclass in Objective-C</title>
+    <published>2012-01-06T06:31:00Z</published>
+    <updated>2012-01-06T06:31:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/implementing-a-mutable-subclass-in-objective-c.html"/>
+    <content type="html">&lt;p&gt;I&amp;#8217;m writing a class in &lt;a href='http://adamstegman.com/projects/git-push.html'&gt;Git Push&lt;/a&gt; to hold and fetch git blobs from &lt;a href='http://developer.github.com/v3/git/blobs/'&gt;Github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@interface GHBlob : NSObject &amp;lt;NSCopying, NSMutableCopying&amp;gt;
+@property (nonatomic, copy, readonly) NSData *content;
+...
+@end
+
+@implementation GHBlob
+@synthesize content = _content;
+...
+@end&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To support creating and updating blobs, I wrote a mutable subclass initialized in #mutableCopy from &lt;a href='http://developer.apple.com/library/ios/#documentation/Cocoa/Reference/Foundation/Protocols/NSMutableCopying_Protocol/Reference/Reference.html#//apple_ref/occ/intf/NSMutableCopying'&gt;NSMutableCopying&lt;/a&gt;. This entailed redefining properties as &lt;code&gt;readwrite&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@interface GHMutableBlob : GHBlob
+@property (nonatomic, copy, readwrite) NSData *content;
+...
+@end
+
+@implementation GHMutableBlob
+@synthesize content = _content;
+...
+@end&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id='problems'&gt;Problems&lt;/h3&gt;
+
+&lt;h4 id='resynthesizing'&gt;Resynthesizing&lt;/h4&gt;
+
+&lt;p&gt;As shown above, I also re-synthesized the methods in the subclass. However, this resulted in the subclass&amp;#8217;s initializer breaking.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;GHBlob *newBlob = [blob mutableCopy];
+STAssertEquals(newBlob.content, blob.content, nil);
+  //=&amp;gt; &amp;#39;&amp;lt;00000000&amp;gt;&amp;#39; should be equal to &amp;#39;&amp;lt;10cbb806&amp;gt;&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On review, I noticed something I&amp;#8217;d missed before in &lt;a href='http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocProperties.html'&gt;Apple&amp;#8217;s documentation on redeclaring properties&lt;/a&gt;. The redeclared property isn&amp;#8217;t synthesized in their example, it&amp;#8217;s declared &lt;code&gt;@dynamic&lt;/code&gt; and the setter is defined by hand. I scoffed at the inconvenience (isn&amp;#8217;t this what synthesizing is supposed to avoid?), but did it anyway.&lt;/p&gt;
+
+&lt;h4 id='unreachable_instance_variables'&gt;Unreachable instance variables&lt;/h4&gt;
+
+&lt;p&gt;Next, the compiler complained that the &lt;code&gt;_content&lt;/code&gt; instance variable was unreachable. Oh, &lt;a href='http://stackoverflow.com/questions/5015130/do-properties-have-to-be-declared-as-instance-variables-in-objective-c#answer-5015657'&gt;so &lt;em&gt;this&lt;/em&gt; is why we define ivars in the interface&lt;/a&gt; - it makes them available to subclasses.&lt;/p&gt;
+
+&lt;h3 id='summary'&gt;Summary&lt;/h3&gt;
+
+&lt;p&gt;So to implement &lt;code&gt;NSMutableCopying&lt;/code&gt;, I had to explicitly declare my instance variables in the interface and explicitly define setter methods in my mutable subclass. I thought the property/synthesize syntax was &lt;a href='http://mobile.dzone.com/news/open-letter-apple-please-kill'&gt;saving me the trouble&lt;/a&gt;, but apparently it&amp;#8217;s not all rainbows and unicorns.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@interface GHBlob : NSObject &amp;lt;NSCopying, NSMutableCopying&amp;gt; {
+  NSData *_content;
+}
+@property (nonatomic, copy, readonly) NSData *content;
+...
+@end
+
+@implementation GHBlob
+@synthesize content = _content;
+@end&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And in the mutable subclass:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@interface GHMutableBlob : GHBlob
+@property (nonatomic, copy, readwrite) NSData *content;
+...
+@end
+
+@implementation GHMutableBlob
+@dynamic content;
+- (void)setContent:(NSData *)content {
+  _content = [content copy];
+}&lt;/code&gt;&lt;/pre&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2012-01-02:/nil-weak-reference-to-an-ocmock-mock-object.html</id>
+    <title type="html">Nil Weak Reference to an OCMock Mock Object</title>
+    <published>2012-01-02T21:55:00Z</published>
+    <updated>2012-01-02T21:55:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/nil-weak-reference-to-an-ocmock-mock-object.html"/>
+    <content type="html">&lt;p&gt;While I was working on unit tests for &lt;a href='http://adamstegman.com/projects/git-push.html'&gt;Git Push&lt;/a&gt;, I wanted to mock my delegate so I could create an expectation. So I used &lt;a href='http://ocmock.org/'&gt;OCMock&lt;/a&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;id delegate = [OCMockObject mockForProtocol:@protocol(MyDelegateProtocol)];
+[[delegate expect] someMethod];
+myClassIvar.connectionDelegate = delegate;
+[myClassIvar someOtherMethod];
+STAssertNoThrow([delegate verify], @&amp;quot;should have called someMethod on delegate&amp;quot;);&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But found the assertion failing. I stepped into #someOtherMethod and discovered the delegate was nil. So I added&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;STAssertNotNil(myClassIvar.connectionDelegate, @&amp;quot;should have set delegate&amp;quot;);&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And watched that fail as well. Since Git Push is using &lt;a href='http://developer.apple.com/technologies/ios5/'&gt;ARC&lt;/a&gt;, I &lt;a href='http://clang.llvm.org/docs/AutomaticReferenceCounting.html#objects'&gt;read up on retain semantics&lt;/a&gt; to see if I was missing something about local references. But local references are strong, so the delegate should not have been deallocated yet.&lt;/p&gt;
+
+&lt;p&gt;I &lt;a href='http://stackoverflow.com/questions/8675054/why-is-my-objects-weak-delegate-property-nil-in-my-unit-tests'&gt;posted about this issue on Stack Overflow&lt;/a&gt; &lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt;, where Evan suggested that OCMock may be the issue. Sure enough, creating an explicit class conforming to my delegate protocol fixed the issue.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@interface MockDelegate : NSObject &amp;lt;MyDelegateProtocol&amp;gt;
+@property (nonatomic, strong) NSNumber *called;
+@end
+@implementation MockDelegate
+@synthesize called = _called;
+- (void)someMethod {
+  _called = [NSNumber numberWithBool:YES];
+}
+@end
+
+@implementation MyClassTests
+- (void)testSomeOtherMethod {
+  MockDelegate *delegate = [[MockDelegate alloc] init];
+  myClassIvar.connectionDelegate = delegate;
+  [myClassIvar someOtherMethod];
+  STAssertTrue([delegate.called boolValue], @&amp;quot;should have called someMethod on delegate&amp;quot;);
+}
+@end&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I still don&amp;#8217;t understand why it was being deallocated, but it was definitely related to OCMock. I&amp;#8217;ve isolated the issue in &lt;a href='https://github.com/adamstegman/ARCMock'&gt;a Github repo&lt;/a&gt; to make it obvious and repeatable.&lt;/p&gt;
+
+&lt;p&gt;UPDATE: Erik Doernenberg of OCMock looked into the issue and answered the Stack Overflow question as well, and determined it&amp;#8217;s actually an issue with NSProxy objects and ARC in the iOS runtime. It works fine on OS X.&lt;/p&gt;
+&lt;div class='footnotes'&gt;&lt;hr /&gt;&lt;ol&gt;&lt;li id='fn:1'&gt;
+&lt;p&gt;Note that my code is slightly different, as I was using a static helper function to create my mock. I confirmed that was not the issue.&lt;/p&gt;
+&lt;a href='#fnref:1' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-08-27:/fillion-rb.html</id>
+    <title type="html">fillion.rb</title>
+    <published>2011-08-27T01:48:00Z</published>
+    <updated>2011-08-27T01:48:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/fillion-rb.html"/>
+    <content type="html">&lt;p&gt;Yesterday Nathan Fillion &lt;a href='http://twitter.com/NathanFillion/statuses/106853202909073409'&gt;tweeted&lt;/a&gt; about finding a permutation of his name on a website. At first I just chuckled, but it soon occurred to me that this would be a fun problem to solve with scripting.&lt;/p&gt;
+
+&lt;p&gt;So I whipped up &lt;a href='https://gist.github.com/1174851'&gt;fillion.rb&lt;/a&gt; to peruse a webpage for permutations of a given word. It was fun to figure out a quick algorithm to find permutations, and then fight scope creep (I ended up writing a crawler for an entire domain).&lt;/p&gt;
+
+&lt;p&gt;The beauty of development is being able to look for a challenge anywhere.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-08-06:/url-driven-development-is-readme-driven-development.html</id>
+    <title type="html">URL-Driven Development is README-Driven Development</title>
+    <published>2011-08-06T19:42:00Z</published>
+    <updated>2011-08-06T19:42:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/url-driven-development-is-readme-driven-development.html"/>
+    <content type="html">&lt;p&gt;While working on &lt;a href='http://adamstegman.com/projects/web-queue.html'&gt;Web Queue&lt;/a&gt; today I went to document the URLs to help me figure out the interface. As I was about to start writing out the URLs, I realized I could make it a lot easier on myself by giving the document some structure. So I decided to roll it into the README, which also needed to be written.&lt;/p&gt;
+
+&lt;p&gt;As I wrote up the README, everything became a bit clearer. Up to that point, I had been fussing over details, learning how to use OAuth and the Netflix API while poorly maintaining a few different classes. Writing the README allowed me to step back and conceive the system as a whole, which made the necessary code much more clear to me. That&amp;#8217;s README-driven development.&lt;/p&gt;
+
+&lt;p&gt;My projects often go like this. I&amp;#8217;m almost always learning a new technology or library, so I can&amp;#8217;t always start off with a good architecture. But starting with the interface can make things a lot clearer.&lt;/p&gt;
+
+&lt;p&gt;Writing out the URLs for a project is pretty similar to writing the README. It has the same goal, figuring out the interface of a project, but focused on web applications instead of any other project. And as I&amp;#8217;m learning from personal experience, that can be exactly what&amp;#8217;s needed for a good project.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-08-04:/new-site.html</id>
+    <title type="html">New Site</title>
+    <published>2011-08-04T01:56:00Z</published>
+    <updated>2011-08-04T01:56:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/new-site.html"/>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;I am very excited by the Internet and how easy it is today to get a project started.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Case in point, &lt;a href='http://adamstegman.com/'&gt;my new site&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#8217;m also hosting &lt;a href='http://blog.adamstegman.com/'&gt;my blog&lt;/a&gt; there now.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-07-21:/til-grails-edition.html</id>
+    <title type="html">TIL, Grails edition</title>
+    <published>2011-07-21T17:38:00Z</published>
+    <updated>2011-07-21T17:38:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/til-grails-edition.html"/>
+    <content type="html">&lt;p&gt;I’ve unfortunately been experiencing the magic of Grails lately.&lt;/p&gt;
+
+&lt;p&gt;TIL:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;new JSONObject([key: []]) == new JSONObject([key: []])&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;new JSONArray([]) == new JSONArray([])&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;but&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;new JSONObject([key: new JSONArray([])]) != new JSONObject([key: new JSONArray([])])&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is so much fun.&lt;/p&gt;
+
+&lt;p&gt;Update: This is due to a non-implementation of &lt;code&gt;JSONArray.hashCode()&lt;/code&gt;. JIRA logged here: &lt;a href='http://jira.grails.org/browse/GRAILS-7770'&gt;http://jira.grails.org/browse/GRAILS-7770&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-07-13:/write-a-readme.html</id>
+    <title type="html">Write a README</title>
+    <published>2011-07-13T06:09:00Z</published>
+    <updated>2011-07-13T06:09:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/write-a-readme.html"/>
+    <content type="html">&lt;p&gt;Reading code documentation to understand a system is like learning how to drive by inspecting the washer fluid dispenser, then a spark plug, then the brake pads. Write a README.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-06-29:/90-percent-of-your-users-are-idiots.html</id>
+    <title type="html">90% of your users are "idiots"</title>
+    <published>2011-06-29T17:56:00Z</published>
+    <updated>2011-06-29T17:56:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/90-percent-of-your-users-are-idiots.html"/>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;And, in good conscience, don’t you want to be an idiot when you’re on the other side of the screen? I do! I want to be an idiot! Please let me be an idiot. I want things to “just work”.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Completely agree. It&amp;#8217;s easy to lose sight of this.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-04-19:/silence-test-unit-tests.html</id>
+    <title type="html">Silence Test::Unit tests</title>
+    <published>2011-04-19T04:20:00Z</published>
+    <updated>2011-04-19T04:20:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/silence-test-unit-tests.html"/>
+    <content type="html">&lt;p&gt;I&amp;#8217;ve written several tests that have the unfortunate side effect of writing to stdout or stderr, polluting my pretty stream of dots.&lt;/p&gt;
+
+&lt;p&gt;Thanks to a &lt;a href='http://benevolentcode.com/2011/03/temporarily-redirect-stdout-in-ruby/'&gt;post on Benevolent Code&lt;/a&gt;, I decided to silence them.&lt;/p&gt;
+&lt;script src='https://gist.github.com/926853.js'&gt; &lt;/script&gt;
+&lt;p&gt;Update:&lt;/p&gt;
+
+&lt;p&gt;The same thing in RSpec:&lt;/p&gt;
+&lt;script src='https://gist.github.com/926858.js'&gt; &lt;/script&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-02-10:/quoted-printable-in-ruby.html</id>
+    <title type="html">Quoted-printable in Ruby</title>
+    <published>2011-02-10T03:31:00Z</published>
+    <updated>2011-02-10T03:31:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/quoted-printable-in-ruby.html"/>
+    <content type="html">&lt;p&gt;I&amp;#8217;m working on reading emails sent from ActionMailer, and was noticing the weird form of what I thought was URL-encoding in an HTML section of a multipart email, e.g.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;html lang=3D&amp;quot;en&amp;quot;&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I also noticed the line length and endings:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;blah blah &amp;#8230; blah bl=&lt;br /&gt;ah blah blah&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I shrugged these off as quirks of ActionMailer or SMTP and moved on to removing/decoding them.&lt;/p&gt;
+
+&lt;p&gt;Two hours later, when googling for info about them because they didn&amp;#8217;t seem consistent, I stumbled across &lt;a href='http://en.wikipedia.org/wiki/Quoted-printable'&gt;Quoted-printable encoding&lt;/a&gt;. I recognized it from the headers in the email, and wondered if someone had written a gem or something to decode it. Then I find &lt;a href='http://rubydoc.info/stdlib/core/1.8.7/String#unpack-instance_method'&gt;this&lt;/a&gt; - String#unpack was able to do it for me all along.&lt;/p&gt;
+
+&lt;p&gt;It&amp;#8217;s great that Ruby (and sometimes Rails) can do things like this out of the box. I just wish I was smart enough to look.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2011-01-05:/test-driven-drudgery.html</id>
+    <title type="html">Test-Driven Drudgery</title>
+    <published>2011-01-05T21:56:00Z</published>
+    <updated>2011-01-05T21:56:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/test-driven-drudgery.html"/>
+    <content type="html">&lt;p&gt;I&amp;#8217;ll admit it. I hate test-driven development while I&amp;#8217;m actually doing it. It&amp;#8217;s boring and tedious. I get lost in details while trying to get some test to work. Maybe I just need to do more &lt;a href='http://thecleancoder.blogspot.com/2010/10/craftsman-62-dark-path.html'&gt;katas&lt;/a&gt;, but it gets old fast.&lt;/p&gt;
+
+&lt;p&gt;Katas make it look so nice and easy. You just think of the right test, write it, and make it pass. But in practice I have a much bigger picture in mind that I want to implement, and I just can&amp;#8217;t limit myself to building it one atom at a time, or I&amp;#8217;ll lose it. Sometimes, I just want to hack.&lt;/p&gt;
+
+&lt;p&gt;So I can sympathize when I see people writing a bunch of code to get some massive feature ready, and then filling in tests at the end. But it&amp;#8217;s wrong. It seems harmless (&amp;#8221;I&amp;#8217;m still testing, right?&amp;#8221;) because the difference can be subtle. Writing tests after the fact means you&amp;#8217;re writing your tests to fit your code, instead of the other way around. You&amp;#8217;re trying to achieve that code coverage metric instead of thinking hard about each feature, branch, and interface.&lt;/p&gt;
+
+&lt;p&gt;Just like writing code without TDD, it can often work just fine. But it&amp;#8217;s not scalable and it results in poorly-tested and/or poorly-written code.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#8217;m not just preaching, I live this dilemma every day. TDD sucks, but man, does it ever improve the quality of my code.&lt;/p&gt;
+
+&lt;p&gt;Sometimes I just hack. But most of the time, I drop in TODO&amp;#8217;s where I need to remember a big picture and get to testing first.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-12-03:/about-me.html</id>
+    <title type="html">About.me</title>
+    <published>2010-12-03T07:30:00Z</published>
+    <updated>2010-12-03T07:30:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/about-me.html"/>
+    <content type="html">&lt;p&gt;I made an about.me page. At the very least, it will be a central repository for where to find me. Hopefully I can get a better background eventually.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-10-25:/activerecord-hangs-on-to-destroyed-relations.html</id>
+    <title type="html">ActiveRecord Hangs On to Destroyed Relations</title>
+    <published>2010-10-25T18:31:00Z</published>
+    <updated>2010-10-25T18:31:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/activerecord-hangs-on-to-destroyed-relations.html"/>
+    <content type="html">&lt;p&gt;Rails&amp;#8217; ActiveRecord has a nifty #destroy method that almost everyone already knows about. The documentation for #destroy &lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt; &lt;sup id='fnref:2'&gt;&lt;a href='#fn:2' rel='footnote'&gt;2&lt;/a&gt;&lt;/sup&gt; helpfully states&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Deletes the record in the database and freezes this instance to reflect that no changes should be made (since they can’t be persisted).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;What is less clear is how it works when you call it on a relationship. To be sure, it destroyed the database record. What it also unfortunately does it hangs on to the reference in the parent object.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;#8217;s throw down with some sample code.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Thing &amp;lt; ActiveRecord::Base
+  has_one :child
+end
+
+class Child &amp;lt; ActiveRecord::Base
+  belongs_to :thing
+end
+
+zengarden&amp;gt; thing = Thing.new
+th=&amp;gt; #&amp;lt;Thing id: nil, name: nil, created_at: nil, updated_at: nil&amp;gt;
+zengarden&amp;gt; thing.save
+=&amp;gt; true
+zengarden&amp;gt; thing.create_child :name =&amp;gt; &amp;quot;Child&amp;quot;
+=&amp;gt; #&amp;lt;Child id: 4, name: &amp;quot;Child&amp;quot;, thing_id: 1,...&amp;gt;
+zengarden&amp;gt; thing.child
+=&amp;gt; #&amp;lt;Child id: 4, name: &amp;quot;Child&amp;quot;, thing_id: 1...&amp;gt;
+zengarden&amp;gt; thing.child.destroy
+=&amp;gt; #&amp;lt;Child id: 4, name: &amp;quot;Child&amp;quot;, thing_id: 1...&amp;gt;
+zengarden&amp;gt; thing.child
+=&amp;gt; #&amp;lt;Child id: 4, name: &amp;quot;Child&amp;quot;, thing_id: 1...&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Arg. I just destroyed it! I don&amp;#8217;t want it hanging around in my cache. If I really wanted to save it, I should have saved it before or during the destroy call. I can of course invalidate my cache by calling&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;thing.child(true)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;which correctly returns nil. But if I don&amp;#8217;t know to do that immediately after the destroy, I get errors like&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;TypeError: can&amp;#8217;t modify frozen hash&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;because code used later naïvely calls&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;if thing.child
+  thing.child.attributes = new_attributes
+end&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;expecting that if a child exists, it should be updated.&lt;/p&gt;
+
+&lt;p&gt;For the sake of argument, let&amp;#8217;s say that maybe the behavior isn&amp;#8217;t so bad, maybe this is what people expect or could use. In that case, what a terrible error message. I&amp;#8217;m not familiar enough with the Associations internals to suggest where a better one could be injected, but something along the lines of&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Can&amp;#8217;t modify a destroyed record&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;would be miles better.&lt;/p&gt;
+&lt;div class='footnotes'&gt;&lt;hr /&gt;&lt;ol&gt;&lt;li id='fn:1'&gt;
+&lt;p&gt;Rails 3 - &lt;a href='http://railsapi.com/doc/rails-v3.0.0/classes/ActiveRecord/Persistence.html#M001019'&gt;http://railsapi.com/doc/rails-v3.0.0/classes/ActiveRecord/Persistence.html#M001019&lt;/a&gt;&lt;/p&gt;
+&lt;a href='#fnref:1' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;li id='fn:2'&gt;
+&lt;p&gt;Rails 2.3.8 - &lt;a href='http://railsapi.com/doc/rails-v2.3.8/classes/ActiveRecord/Base.html#M001111'&gt;http://railsapi.com/doc/rails-v2.3.8/classes/ActiveRecord/Base.html#M001111&lt;/a&gt;&lt;/p&gt;
+&lt;a href='#fnref:2' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-10-20:/read-link-later-works-with-new-twitter.html</id>
+    <title type="html">Read Link Later Works With New Twitter</title>
+    <published>2010-10-20T12:27:00Z</published>
+    <updated>2010-10-20T12:27:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/read-link-later-works-with-new-twitter.html"/>
+    <content type="html">&lt;p&gt;Version 1.1.0 of Read Link Later now works with New Twitter. Rejoice!&lt;/p&gt;
+
+&lt;p&gt;Sorry for the delay. New Twitter came to me at a bad time, where I didn&amp;#8217;t have the time to devote to updating Read Link Later. Fortunately, we&amp;#8217;re in business now!&lt;/p&gt;
+
+&lt;p&gt;The only issue is that the New Twitter uses their own API through JavaScript, so I don&amp;#8217;t have a way of knowing when a tweet is loaded. To work around this, I look for new tweets to add the Read Later links to every 100 ms. If I could hack in a custom event, that would be something.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-08-18:/complex-associations-with-factory-girl.html</id>
+    <title type="html">Complex Associations with factory_girl</title>
+    <published>2010-08-18T19:00:00Z</published>
+    <updated>2010-08-18T19:00:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/complex-associations-with-factory-girl.html"/>
+    <content type="html">&lt;p&gt;&lt;a href='http://github.com/thoughtbot/factory_girl'&gt;factory_girl&lt;/a&gt; is great for DRYing up test code and making tests isolated and maintainable. What it&amp;#8217;s not so great at is any &lt;a href='http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html'&gt;association&lt;/a&gt; more complicated than has_one/belongs_to. I found &lt;a href='http://stackoverflow.com/questions/2937326/populating-an-association-with-children-in-factory-girl'&gt;a nice trick on Stack Overflow&lt;/a&gt; for has_many associations.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The Factory.after_ hooks appear to be the only way to do this successfully.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It&amp;#8217;s a shame, because it makes it really painful to use factories. What used to be a one-line call to create whatever you need becomes writing your own factories that call factory_girl factories.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-08-16:/read-link-later.html</id>
+    <title type="html">Read Link Later</title>
+    <published>2010-08-16T04:35:00Z</published>
+    <updated>2010-08-16T04:35:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/read-link-later.html"/>
+    <content type="html">&lt;p&gt;I&amp;#8217;m excited to publish my first Google Chrome extension, Read Link Later. From the detail page:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Read Link Later adds an Instapaper &amp;#8220;Read Later&amp;#8221; link to each tweet in a Twitter.com feed. The link retrieves each external URL in the tweet and adds it to your Instapaper queue for reading later.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Unfortunately I can&amp;#8217;t add these links to clients, that would be even more helpful.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-08-07:/happiness.html</id>
+    <title type="html">Happiness</title>
+    <published>2010-08-07T03:17:00Z</published>
+    <updated>2010-08-07T03:17:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/happiness.html"/>
+    <content type="html">&lt;p&gt;&lt;a href='http://iwasamonkey.tumblr.com/post/915222642/happiness'&gt;iwasamonkey&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img alt='Happiness' src='/images/happiness.jpg' /&gt;&lt;/p&gt;
+
+&lt;p&gt;Happiness&lt;/p&gt;
+&lt;/blockquote&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-08-03:/gobolinux.html</id>
+    <title type="html">GoboLinux</title>
+    <published>2010-08-03T15:19:00Z</published>
+    <updated>2010-08-03T15:19:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/gobolinux.html"/>
+    <content type="html">&lt;p&gt;&lt;a href='http://onethingwell.org/post/898477013/gobolinux'&gt;onethingwell&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;GoboLinux is a modular Linux distribution: it organizes the programs in your system in a new, logical way. Instead of having parts of a program thrown at &lt;code&gt;/usr/bin&lt;/code&gt;, other parts at &lt;code&gt;/etc&lt;/code&gt; and yet more parts thrown at&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/usr/share/something/or/another&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;each program gets its own directory tree&lt;/em&gt;, keeping them all neatly separated and allowing you to see everything that’s installed in the system and which files belong to which programs in a simple and obvious way.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Off-topic, I know, but this strikes me as an eminently sensible approach.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Sounds like what OS X does with applications. Very sensible.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-07-17:/grid-layout-as-bad-as-table-layout.html</id>
+    <title type="html">Grid Layout As Bad As Table Layout?</title>
+    <published>2010-07-17T05:06:00Z</published>
+    <updated>2010-07-17T05:06:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/grid-layout-as-bad-as-table-layout.html"/>
+    <content type="html">&lt;p&gt;The more I think about this, the more this statement bothers me. &lt;a href='http://twitter.com/tavon'&gt;@tavon&lt;/a&gt; said that grid layouts like &lt;a href='http://960.gs/'&gt;960 grid&lt;/a&gt; are as bad as table layouts. His reasoning was that the classes are purely presentational; it&amp;#8217;s presentation affecting markup the same way tables used to.&lt;/p&gt;
+
+&lt;p&gt;But that&amp;#8217;s just misuse of the layouts. You shouldn&amp;#8217;t pull something massive and generic like a grid layout and not modify it to suit your website. Wouldn&amp;#8217;t you modify your reset stylesheet to match the styles your website uses? Use your existing class names instead of the presentational grid class names, and remove the classes you don&amp;#8217;t need. These third party tools are not holy relics - change them to what you need!&lt;/p&gt;
+
+&lt;p&gt;That doesn&amp;#8217;t mean they can&amp;#8217;t or don&amp;#8217;t affect markup inappropriately. I haven&amp;#8217;t used a grid layout, so I&amp;#8217;m not familiar with what&amp;#8217;s required. But the generated styles aren&amp;#8217;t inherently bad, they just need to be adapted.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-06-29:/dont-override-system-shortcuts.html</id>
+    <title type="html">Don't Override System Shortcuts</title>
+    <published>2010-06-29T14:31:00Z</published>
+    <updated>2010-06-29T14:31:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/dont-override-system-shortcuts.html"/>
+    <content type="html">&lt;p&gt;I&amp;#8217;ve had to uninstall &lt;a href='http://code.leadmediapartners.com/'&gt;RubyAMP&lt;/a&gt;, a TextMate bundle that I use several times a day, because it overrode Ctrl+B and refused to let me change it.&lt;/p&gt;
+
+&lt;p&gt;I realize most people don&amp;#8217;t use these shortcuts, so I&amp;#8217;ll explain it. Ctrl+B moves the cursor back one character, the equivalent of the left arrow key without having to move your hands. My workflow uses Ctrl+B so constantly that I couldn&amp;#8217;t live with RubyAMP anymore, even though I enjoy its functionality.&lt;/p&gt;
+
+&lt;p&gt;The reason this is so negative is the fact that Ctrl+B is not a shortcut that I added; it&amp;#8217;s part of OS X. If you are creating keyboard shortcuts for your program or extension, you can&amp;#8217;t possibly avoid stepping on every other program&amp;#8217;s toes. But the least you can do is avoid stepping on the operating system&amp;#8217;s toes. Otherwise it&amp;#8217;s just negligent, user-hostile design.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-06-22:/thanks-captain-obvious.html</id>
+    <title type="html">Thanks, Captain Obvious</title>
+    <published>2010-06-22T20:43:00Z</published>
+    <updated>2010-06-22T20:43:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/thanks-captain-obvious.html"/>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;This viral ad for &lt;em&gt;Civilization V&lt;/em&gt; about people trying to kick their &lt;em&gt;Civ&lt;/em&gt; habit will probably just make you want to pick the game up again.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Wow, it&amp;#8217;s almost like that&amp;#8217;s what they intended.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href='http://www.escapistmagazine.com/news/view/101565-Civ-Anonymous-Where-You-Go-to-Stop-Taking-Another-Turn'&gt;Source&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-06-21:/onclick-is-your-friend.html</id>
+    <title type="html">onclick is Your Friend</title>
+    <published>2010-06-21T23:00:00Z</published>
+    <updated>2010-06-21T23:00:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/onclick-is-your-friend.html"/>
+    <content type="html">&lt;p&gt;Mark asserts that while using onclick is frowned upon, it&amp;#8217;s faster and cleaner:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Sure it makes your XHTML a bit longer, but that’s one less selector jQuery has to parse and one less DOMReady function your browser has to kick off.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;That&amp;#8217;s &lt;em&gt;true&lt;/em&gt;, but it comes at the cost of maintainability. Putting the jQuery example he provided into an external file makes it easier to maintain by having all the JavaScript in predictable and findable places.&lt;/p&gt;
+
+&lt;p&gt;Additionally, that performance hit can be mitigated by using progressive enhancement to give the entire page functionality immediately, then asynchronously loading the JavaScript to enhance it. Asynchronously loading your JS may or may not even be necessary, depending on your JS payload.&lt;/p&gt;
+
+&lt;p&gt;Using inline code like this isn&amp;#8217;t necessary for most people; they just make your code harder to read.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-06-20:/defending-terrible-things.html</id>
+    <title type="html">Defending Terrible Things</title>
+    <published>2010-06-20T05:14:00Z</published>
+    <updated>2010-06-20T05:14:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/defending-terrible-things.html"/>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;You know what would annoy the shit out of me if I were using a screen reader to read a bibliography on the internet? Listening to a goofy-sounding computer voice try to emphasize every single word of &lt;em&gt;Journal of the Study of Obscure and Mostly-in-Latin Canine Diseases Affecting Generally the Respiratory System but Also Sometimes the Lymph Nodes&lt;/em&gt; or something. I don’t know that this is still a problem, but the idea is ridiculous in and of itself. Italic does not always mean emphasis, nor does bold always mean MAKE THIS LOUD.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Hey, you know, that&amp;#8217;s true. That&amp;#8217;s what &amp;#60;b&amp;#62; and &amp;#60;i&amp;#62; should be used for. Here&amp;#8217;s what they &lt;em&gt;shouldn&amp;#8217;t&lt;/em&gt; be used for, from the same article:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The bold and italic tags are short. The emphasis tag isn’t bad, but the strong tag is way too long to be a good value per keystroke.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Yeah, semantic HTML uses tags that are longer than one character. &amp;#60;strong&amp;#62; is five whole more letters than &amp;#60;b&amp;#62;! Sounds like someone who throws around a lot of &amp;#8220;u&amp;#8221;instead of &amp;#8220;you&amp;#8221;, and &amp;#8220;y&amp;#8221; instead of &amp;#8220;why&amp;#8221; in textual conversations. Not someone I&amp;#8217;d want to take design advice from.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I add&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;i&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to things I don’t necessarily want bolded or italicized. I do it because they’re some of the shortest elements available and they provide a hook to style child elements in larger repeated widgets with very precise, complex layouts. If I have to wrap every word of text in a tag just to accomplish some goofy layout, I’m using the smallest thing available.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;That sounds like a pretty poor layout.&lt;/p&gt;
+
+&lt;p&gt;Bottom line is, &amp;#60;b&amp;#62; and &amp;#60;i&amp;#62; have their place, but it&amp;#8217;s not showing emphasis, nor is it saving keystrokes or because this layout is kinda complicated and I want some easy hooks.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-06-17:/comments-are-hard-work.html</id>
+    <title type="html">Comments are hard work.</title>
+    <published>2010-06-17T15:13:00Z</published>
+    <updated>2010-06-17T15:13:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/comments-are-hard-work.html"/>
+    <content type="html">&lt;p&gt;And no one wants to put in that much work.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>tag:blog.adamstegman.com,2010-06-17:/this-is-why-we-cant-have-nice-things.html</id>
+    <title type="html">This is why we can't have nice things.</title>
+    <published>2010-06-17T15:08:00Z</published>
+    <updated>2010-06-17T15:08:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/this-is-why-we-cant-have-nice-things.html"/>
+    <content type="html">&lt;p&gt;The top-voted comments here are a great example of why people are agreeing with &lt;a href='http://daringfireball.net/2010/06/whats_fair'&gt;John Gruber&amp;#8217;s assessment of comments&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;What makes DF an efficient and effective soapbox is exactly that it is &lt;em&gt;not&lt;/em&gt; noisy. My goal is for not a single wasted word to appear anywhere on any page of the site.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Those comments distract from the article with fiery, irrelevant rants that show the authors didn&amp;#8217;t even RTFA. The whole point of the article is lost if you start reading them.&lt;/p&gt;</content>
+  </entry>
+</feed>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta content='en-us' http-equiv='Content-Language'>
+    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
+    <meta name='keywords'>
+    <meta name='description'>
+    <title>Complex Associations with factory_girl - My Kind of Stupid</title>
+    <link href='/feed.xml' rel='alternate' title='Articles' type='application/atom+xml'>
+    <link href='/favicon.ico' rel='icon' type='image/vnd.microsoft.icon'>
+    <link href='/stylesheets/application.css' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <header>
+      <div class='container'>
+        <hgroup>
+          <h1>
+            <a class='title' href='/'>My Kind of Stupid</a>
+          </h1>
+          <h2>Web development, user interfaces, and other development topics.</h2>
+        </hgroup>
+        <nav>
+          <ul class='nav-list'>
+            <li>
+              <a href='/'>Articles</a>
+            </li>
+            <li>
+              <a href='http://adamstegman.com/'>Adam Stegman</a>
+            </li>
+            <li>
+              <a href='http://twitter.com/adamstegman' rel='me'>Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman' rel='me'>Github</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class='content'>
+      <div class='container'>
+        <article itemscope itemtype='http://www.schema.org/BlogPosting'>
+          <header>
+            <hgroup>
+              <h2 itemprop='name'>Complex Associations with factory_girl</h2>
+            </hgroup>
+          </header>
+          <div class='article-body' itemprop='articleBody'>
+            <p><a href='http://github.com/thoughtbot/factory_girl'>factory_girl</a> is great for DRYing up test code and making tests isolated and maintainable. What it&#8217;s not so great at is any <a href='http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html'>association</a> more complicated than has_one/belongs_to. I found <a href='http://stackoverflow.com/questions/2937326/populating-an-association-with-children-in-factory-girl'>a nice trick on Stack Overflow</a> for has_many associations.</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>The Factory.after_ hooks appear to be the only way to do this successfully.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>It&#8217;s a shame, because it makes it really painful to use factories. What used to be a one-line call to create whatever you need becomes writing your own factories that call factory_girl factories.</p>
+          </div>
+          <footer>
+            <div class='published'>
+              Published at
+              <time datetime='2010-08-18T19:00Z' itemprop='datePublished' pubdate>August 18, 2010, 2:00 pm</time>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <section class='author'>
+          <h2>
+            Written by
+            <a href='http://adamstegman.com/' rel='author'>Adam Stegman</a>
+          </h2>
+          <ul class='contact'>
+            <li>
+              <a href='http://twitter.com/adamstegman'>Follow me on Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman'>Follow me on Github</a>
+            </li>
+            <li>
+              <a href='http://profiles.google.com/adam.stegman'>Google Profile</a>
+            </li>
+            <li>
+              <a href='mailto:me@adamstegman.com'>Email me</a>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </footer>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-24951237-1']);
+      _gaq.push(['_setDomainName', '.adamstegman.com']);
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

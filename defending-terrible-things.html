@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta content='en-us' http-equiv='Content-Language'>
+    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
+    <meta name='keywords'>
+    <meta name='description'>
+    <title>Defending Terrible Things - My Kind of Stupid</title>
+    <link href='/feed.xml' rel='alternate' title='Articles' type='application/atom+xml'>
+    <link href='/favicon.ico' rel='icon' type='image/vnd.microsoft.icon'>
+    <link href='/stylesheets/application.css' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <header>
+      <div class='container'>
+        <hgroup>
+          <h1>
+            <a class='title' href='/'>My Kind of Stupid</a>
+          </h1>
+          <h2>Web development, user interfaces, and other development topics.</h2>
+        </hgroup>
+        <nav>
+          <ul class='nav-list'>
+            <li>
+              <a href='/'>Articles</a>
+            </li>
+            <li>
+              <a href='http://adamstegman.com/'>Adam Stegman</a>
+            </li>
+            <li>
+              <a href='http://twitter.com/adamstegman' rel='me'>Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman' rel='me'>Github</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class='content'>
+      <div class='container'>
+        <article itemscope itemtype='http://www.schema.org/BlogPosting'>
+          <header>
+            <hgroup>
+              <h2>
+                <a href='http://garann.wordpress.com/2010/06/19/defending-terrible-things/'>
+                  <span itemprop='name headline'>Defending Terrible Things</span>
+                </a>
+              </h2>
+            </hgroup>
+          </header>
+          <div class='article-body' itemprop='articleBody'>
+            <blockquote>&#x000A;<p>You know what would annoy the shit out of me if I were using a screen reader to read a bibliography on the internet? Listening to a goofy-sounding computer voice try to emphasize every single word of <em>Journal of the Study of Obscure and Mostly-in-Latin Canine Diseases Affecting Generally the Respiratory System but Also Sometimes the Lymph Nodes</em> or something. I don’t know that this is still a problem, but the idea is ridiculous in and of itself. Italic does not always mean emphasis, nor does bold always mean MAKE THIS LOUD.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Hey, you know, that&#8217;s true. That&#8217;s what &#60;b&#62; and &#60;i&#62; should be used for. Here&#8217;s what they <em>shouldn&#8217;t</em> be used for, from the same article:</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>The bold and italic tags are short. The emphasis tag isn’t bad, but the strong tag is way too long to be a good value per keystroke.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Yeah, semantic HTML uses tags that are longer than one character. &#60;strong&#62; is five whole more letters than &#60;b&#62;! Sounds like someone who throws around a lot of &#8220;u&#8221;instead of &#8220;you&#8221;, and &#8220;y&#8221; instead of &#8220;why&#8221; in textual conversations. Not someone I&#8217;d want to take design advice from.</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>I add</p>&#x000A;&#x000A;<pre><code>&lt;b&gt;</code></pre>&#x000A;&#x000A;<p>and</p>&#x000A;&#x000A;<pre><code>&lt;i&gt;</code></pre>&#x000A;&#x000A;<p>to things I don’t necessarily want bolded or italicized. I do it because they’re some of the shortest elements available and they provide a hook to style child elements in larger repeated widgets with very precise, complex layouts. If I have to wrap every word of text in a tag just to accomplish some goofy layout, I’m using the smallest thing available.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>That sounds like a pretty poor layout.</p>&#x000A;&#x000A;<p>Bottom line is, &#60;b&#62; and &#60;i&#62; have their place, but it&#8217;s not showing emphasis, nor is it saving keystrokes or because this layout is kinda complicated and I want some easy hooks.</p>
+          </div>
+          <footer>
+            <div class='published'>
+              Published at
+              <time datetime='2010-06-20T05:14Z' itemprop='datePublished' pubdate>June 20, 2010, 12:14 am</time>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <section class='author'>
+          <h2>
+            Written by
+            <a href='http://adamstegman.com/' rel='author'>Adam Stegman</a>
+          </h2>
+          <ul class='contact'>
+            <li>
+              <a href='http://twitter.com/adamstegman'>Follow me on Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman'>Follow me on Github</a>
+            </li>
+            <li>
+              <a href='http://profiles.google.com/adam.stegman'>Google Profile</a>
+            </li>
+            <li>
+              <a href='mailto:me@adamstegman.com'>Email me</a>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </footer>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-24951237-1']);
+      _gaq.push(['_setDomainName', '.adamstegman.com']);
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

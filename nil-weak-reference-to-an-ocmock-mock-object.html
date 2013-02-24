@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta content='en-us' http-equiv='Content-Language'>
+    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
+    <meta name='keywords'>
+    <meta name='description'>
+    <title>Nil Weak Reference to an OCMock Mock Object - My Kind of Stupid</title>
+    <link href='/feed.xml' rel='alternate' title='Articles' type='application/atom+xml'>
+    <link href='/favicon.ico' rel='icon' type='image/vnd.microsoft.icon'>
+    <link href='/stylesheets/application.css' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <header>
+      <div class='container'>
+        <hgroup>
+          <h1>
+            <a class='title' href='/'>My Kind of Stupid</a>
+          </h1>
+          <h2>Web development, user interfaces, and other development topics.</h2>
+        </hgroup>
+        <nav>
+          <ul class='nav-list'>
+            <li>
+              <a href='/'>Articles</a>
+            </li>
+            <li>
+              <a href='http://adamstegman.com/'>Adam Stegman</a>
+            </li>
+            <li>
+              <a href='http://twitter.com/adamstegman' rel='me'>Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman' rel='me'>Github</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class='content'>
+      <div class='container'>
+        <article itemscope itemtype='http://www.schema.org/BlogPosting'>
+          <header>
+            <hgroup>
+              <h2 itemprop='name'>Nil Weak Reference to an OCMock Mock Object</h2>
+            </hgroup>
+          </header>
+          <div class='article-body' itemprop='articleBody'>
+            <p>While I was working on unit tests for <a href='http://adamstegman.com/projects/git-push.html'>Git Push</a>, I wanted to mock my delegate so I could create an expectation. So I used <a href='http://ocmock.org/'>OCMock</a>:</p>&#x000A;&#x000A;<pre><code>id delegate = [OCMockObject mockForProtocol:@protocol(MyDelegateProtocol)];&#x000A;[[delegate expect] someMethod];&#x000A;myClassIvar.connectionDelegate = delegate;&#x000A;[myClassIvar someOtherMethod];&#x000A;STAssertNoThrow([delegate verify], @&quot;should have called someMethod on delegate&quot;);</code></pre>&#x000A;&#x000A;<p>But found the assertion failing. I stepped into #someOtherMethod and discovered the delegate was nil. So I added</p>&#x000A;&#x000A;<pre><code>STAssertNotNil(myClassIvar.connectionDelegate, @&quot;should have set delegate&quot;);</code></pre>&#x000A;&#x000A;<p>And watched that fail as well. Since Git Push is using <a href='http://developer.apple.com/technologies/ios5/'>ARC</a>, I <a href='http://clang.llvm.org/docs/AutomaticReferenceCounting.html#objects'>read up on retain semantics</a> to see if I was missing something about local references. But local references are strong, so the delegate should not have been deallocated yet.</p>&#x000A;&#x000A;<p>I <a href='http://stackoverflow.com/questions/8675054/why-is-my-objects-weak-delegate-property-nil-in-my-unit-tests'>posted about this issue on Stack Overflow</a> <sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup>, where Evan suggested that OCMock may be the issue. Sure enough, creating an explicit class conforming to my delegate protocol fixed the issue.</p>&#x000A;&#x000A;<pre><code>@interface MockDelegate : NSObject &lt;MyDelegateProtocol&gt;&#x000A;@property (nonatomic, strong) NSNumber *called;&#x000A;@end&#x000A;@implementation MockDelegate&#x000A;@synthesize called = _called;&#x000A;- (void)someMethod {&#x000A;  _called = [NSNumber numberWithBool:YES];&#x000A;}&#x000A;@end&#x000A;&#x000A;@implementation MyClassTests&#x000A;- (void)testSomeOtherMethod {&#x000A;  MockDelegate *delegate = [[MockDelegate alloc] init];&#x000A;  myClassIvar.connectionDelegate = delegate;&#x000A;  [myClassIvar someOtherMethod];&#x000A;  STAssertTrue([delegate.called boolValue], @&quot;should have called someMethod on delegate&quot;);&#x000A;}&#x000A;@end</code></pre>&#x000A;&#x000A;<p>I still don&#8217;t understand why it was being deallocated, but it was definitely related to OCMock. I&#8217;ve isolated the issue in <a href='https://github.com/adamstegman/ARCMock'>a Github repo</a> to make it obvious and repeatable.</p>&#x000A;&#x000A;<p>UPDATE: Erik Doernenberg of OCMock looked into the issue and answered the Stack Overflow question as well, and determined it&#8217;s actually an issue with NSProxy objects and ARC in the iOS runtime. It works fine on OS X.</p>&#x000A;<div class='footnotes'><hr /><ol><li id='fn:1'>&#x000A;<p>Note that my code is slightly different, as I was using a static helper function to create my mock. I confirmed that was not the issue.</p>&#x000A;<a href='#fnref:1' rev='footnote'>&#8617;</a></li></ol></div>
+          </div>
+          <footer>
+            <div class='published'>
+              Published at
+              <time datetime='2012-01-02T21:55Z' itemprop='datePublished' pubdate>January 2, 2012 3:55pm</time>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <section class='author'>
+          <h2>
+            Written by
+            <a href='http://adamstegman.com/' rel='author'>Adam Stegman</a>
+          </h2>
+          <ul class='contact'>
+            <li>
+              <a href='http://twitter.com/adamstegman'>Follow me on Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman'>Follow me on Github</a>
+            </li>
+            <li>
+              <a href='http://profiles.google.com/adam.stegman'>Google Profile</a>
+            </li>
+            <li>
+              <a href='mailto:me@adamstegman.com'>Email me</a>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </footer>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-24951237-1']);
+      _gaq.push(['_setDomainName', '.adamstegman.com']);
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta content='en-us' http-equiv='Content-Language'>
+    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
+    <meta name='keywords'>
+    <meta name='description'>
+    <title>TIL, Grails edition - My Kind of Stupid</title>
+    <link href='/feed.xml' rel='alternate' title='Articles' type='application/atom+xml'>
+    <link href='/favicon.ico' rel='icon' type='image/vnd.microsoft.icon'>
+    <link href='/stylesheets/application.css' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <header>
+      <div class='container'>
+        <hgroup>
+          <h1>
+            <a class='title' href='/'>My Kind of Stupid</a>
+          </h1>
+          <h2>Web development, user interfaces, and other development topics.</h2>
+        </hgroup>
+        <nav>
+          <ul class='nav-list'>
+            <li>
+              <a href='/'>Articles</a>
+            </li>
+            <li>
+              <a href='http://adamstegman.com/'>Adam Stegman</a>
+            </li>
+            <li>
+              <a href='http://twitter.com/adamstegman' rel='me'>Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman' rel='me'>Github</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class='content'>
+      <div class='container'>
+        <article itemscope itemtype='http://www.schema.org/BlogPosting'>
+          <header>
+            <hgroup>
+              <h2 itemprop='name'>TIL, Grails edition</h2>
+            </hgroup>
+          </header>
+          <div class='article-body' itemprop='articleBody'>
+            <p>I’ve unfortunately been experiencing the magic of Grails lately.</p>&#x000A;&#x000A;<p>TIL:</p>&#x000A;&#x000A;<pre><code>new JSONObject([key: []]) == new JSONObject([key: []])</code></pre>&#x000A;&#x000A;<p>and</p>&#x000A;&#x000A;<pre><code>new JSONArray([]) == new JSONArray([])</code></pre>&#x000A;&#x000A;<p>but</p>&#x000A;&#x000A;<pre><code>new JSONObject([key: new JSONArray([])]) != new JSONObject([key: new JSONArray([])])</code></pre>&#x000A;&#x000A;<p>This is so much fun.</p>&#x000A;&#x000A;<p>Update: This is due to a non-implementation of <code>JSONArray.hashCode()</code>. JIRA logged here: <a href='http://jira.grails.org/browse/GRAILS-7770'>http://jira.grails.org/browse/GRAILS-7770</a></p>
+          </div>
+          <footer>
+            <div class='published'>
+              Published at
+              <time datetime='2011-07-21T17:38Z' itemprop='datePublished' pubdate>July 21, 2011, 10:38 pm</time>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <section class='author'>
+          <h2>
+            Written by
+            <a href='http://adamstegman.com/' rel='author'>Adam Stegman</a>
+          </h2>
+          <ul class='contact'>
+            <li>
+              <a href='http://twitter.com/adamstegman'>Follow me on Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman'>Follow me on Github</a>
+            </li>
+            <li>
+              <a href='http://profiles.google.com/adam.stegman'>Google Profile</a>
+            </li>
+            <li>
+              <a href='mailto:me@adamstegman.com'>Email me</a>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </footer>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-24951237-1']);
+      _gaq.push(['_setDomainName', '.adamstegman.com']);
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

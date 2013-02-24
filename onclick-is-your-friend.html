@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta content='en-us' http-equiv='Content-Language'>
+    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
+    <meta name='keywords'>
+    <meta name='description'>
+    <title>onclick is Your Friend - My Kind of Stupid</title>
+    <link href='/feed.xml' rel='alternate' title='Articles' type='application/atom+xml'>
+    <link href='/favicon.ico' rel='icon' type='image/vnd.microsoft.icon'>
+    <link href='/stylesheets/application.css' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <header>
+      <div class='container'>
+        <hgroup>
+          <h1>
+            <a class='title' href='/'>My Kind of Stupid</a>
+          </h1>
+          <h2>Web development, user interfaces, and other development topics.</h2>
+        </hgroup>
+        <nav>
+          <ul class='nav-list'>
+            <li>
+              <a href='/'>Articles</a>
+            </li>
+            <li>
+              <a href='http://adamstegman.com/'>Adam Stegman</a>
+            </li>
+            <li>
+              <a href='http://twitter.com/adamstegman' rel='me'>Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman' rel='me'>Github</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class='content'>
+      <div class='container'>
+        <article itemscope itemtype='http://www.schema.org/BlogPosting'>
+          <header>
+            <hgroup>
+              <h2>
+                <a href='http://thenerdary.net/articles/entry/onclick-is-your-friend'>
+                  <span itemprop='name headline'>onclick is Your Friend</span>
+                </a>
+              </h2>
+            </hgroup>
+          </header>
+          <div class='article-body' itemprop='articleBody'>
+            <p>Mark asserts that while using onclick is frowned upon, it&#8217;s faster and cleaner:</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>Sure it makes your XHTML a bit longer, but that’s one less selector jQuery has to parse and one less DOMReady function your browser has to kick off.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>That&#8217;s <em>true</em>, but it comes at the cost of maintainability. Putting the jQuery example he provided into an external file makes it easier to maintain by having all the JavaScript in predictable and findable places.</p>&#x000A;&#x000A;<p>Additionally, that performance hit can be mitigated by using progressive enhancement to give the entire page functionality immediately, then asynchronously loading the JavaScript to enhance it. Asynchronously loading your JS may or may not even be necessary, depending on your JS payload.</p>&#x000A;&#x000A;<p>Using inline code like this isn&#8217;t necessary for most people; they just make your code harder to read.</p>
+          </div>
+          <footer>
+            <div class='published'>
+              Published at
+              <time datetime='2010-06-21T23:00Z' itemprop='datePublished' pubdate>June 21, 2010, 6:00 pm</time>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <section class='author'>
+          <h2>
+            Written by
+            <a href='http://adamstegman.com/' rel='author'>Adam Stegman</a>
+          </h2>
+          <ul class='contact'>
+            <li>
+              <a href='http://twitter.com/adamstegman'>Follow me on Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman'>Follow me on Github</a>
+            </li>
+            <li>
+              <a href='http://profiles.google.com/adam.stegman'>Google Profile</a>
+            </li>
+            <li>
+              <a href='mailto:me@adamstegman.com'>Email me</a>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </footer>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-24951237-1']);
+      _gaq.push(['_setDomainName', '.adamstegman.com']);
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
