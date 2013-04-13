@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta content='en-us' http-equiv='Content-Language'>
+    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
+    <meta name='keywords'>
+    <meta name='description'>
+    <title>JRuby NameError: missing class or uppercase package name - My Kind of Stupid</title>
+    <link href='/feed.xml' rel='alternate' title='Articles' type='application/atom+xml'>
+    <link href='/favicon.ico' rel='icon' type='image/vnd.microsoft.icon'>
+    <link href='/stylesheets/application.css' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <header>
+      <div class='container'>
+        <hgroup>
+          <h1>
+            <a class='title' href='/'>My Kind of Stupid</a>
+          </h1>
+          <h2>Web development, user interfaces, and other development topics.</h2>
+        </hgroup>
+        <nav>
+          <ul class='nav-list'>
+            <li>
+              <a href='/'>Articles</a>
+            </li>
+            <li>
+              <a href='http://adamstegman.com/'>Adam Stegman</a>
+            </li>
+            <li>
+              <a href='http://twitter.com/adamstegman' rel='me'>Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman' rel='me'>Github</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class='content'>
+      <div class='container'>
+        <article itemscope itemtype='http://www.schema.org/BlogPosting'>
+          <header>
+            <hgroup>
+              <h2 itemprop='name'>JRuby NameError: missing class or uppercase package name</h2>
+            </hgroup>
+          </header>
+          <div class='article-body' itemprop='articleBody'>
+            <p>Originally posted as a <a href='https://gist.github.com/adamstegman/5077010'>gist</a> in response to <a href='https://twitter.com/adamstegman/status/307944394445688832'>this twitter conversation</a>.</p>&#x000A;&#x000A;<p>I&#8217;m working on a Rails application that uses the <a href='http://archive.msdn.microsoft.com/ewsjavaapi'>Exchange Webservices API</a>. Unfortunately the EWS API has a weird package, but I thought that wouldn&#8217;t be hard to overcome. So I wrote this script:</p>&#x000A;&#x000A;<pre><code>require &#39;java&#39;&#x000A;require &#39;vendor/lib/EWSJavaAPI_1.2.jar&#39;&#x000A;&#x000A;def microsoft&#x000A;  Java::Microsoft&#x000A;end&#x000A;&#x000A;version = microsoft.exchange.webservices.data.ExchangeVersion::Exchange2010_SP1&#x000A;service = microsoft.exchange.webservices.data.ExchangeService.new(version)</code></pre>&#x000A;&#x000A;<p>Getting the ExchangeVersion enum worked fine, but trying to access the ExchangeService class resulted in this error:</p>&#x000A;&#x000A;<blockquote>&#x000A;<pre><code>NameError: missing class or uppercase package name (`microsoft.exchange.webservices.data.ExchangeService&#39;)&#x000A;get_proxy_or_package_under_package at org/jruby/javasupport/JavaUtilities.java:54&#x000A;method_missing at file:/Users/adam/.rvm/rubies/jruby-1.7.3/lib/jruby.jar!/jruby/java/java_package_module_template.rb:14&#x000A;(root) at lib/sandbox.rb:11</code></pre>&#x000A;</blockquote>&#x000A;&#x000A;<p>I thought the problem was with the package name, but the error is actually that the EWS API is missing its dependencies. It needed commons-httpclient and commons-logging-api on the classpath. I discovered this via clojure&#8217;s error message for similar code:</p>&#x000A;&#x000A;<pre><code>(import &#39;(microsoft.exchange.webservices.data ExchangeService))</code></pre>&#x000A;&#x000A;<blockquote>&#x000A;<pre><code>ClassNotFoundException org.apache.commons.httpclient.HttpConnectionManager  java.net.URLClassLoader$1.run (URLClassLoader.java:366)</code></pre>&#x000A;</blockquote>&#x000A;&#x000A;<p>So the real issue here is JRuby&#8217;s error message. Interestingly enough, JRuby did give me a better error once commons-httpclient was on the classpath:</p>&#x000A;&#x000A;<blockquote>&#x000A;<pre><code>MultiThreadedHttpConnectionManager.java:70:in `&lt;clinit&gt;&#39;: java.lang.NoClassDefFoundError: org/apache/commons/logging/LogFactory</code></pre>&#x000A;</blockquote>&#x000A;&#x000A;<p>That told me commons-logging-api was also missing. JRuby should have told me that in the first place.</p>
+          </div>
+          <footer>
+            <div class='published'>
+              Published at
+              <time datetime='2013-04-13T19:43Z' itemprop='datePublished' pubdate>April 13, 2013, 2:43 pm</time>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <section class='author'>
+          <h2>
+            Written by
+            <a href='http://adamstegman.com/' rel='author'>Adam Stegman</a>
+          </h2>
+          <ul class='contact'>
+            <li>
+              <a href='http://twitter.com/adamstegman'>Follow me on Twitter</a>
+            </li>
+            <li>
+              <a href='http://github.com/adamstegman'>Follow me on Github</a>
+            </li>
+            <li>
+              <a href='http://profiles.google.com/adam.stegman'>Google Profile</a>
+            </li>
+            <li>
+              <a href='mailto:me@adamstegman.com'>Email me</a>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </footer>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-24951237-1']);
+      _gaq.push(['_setDomainName', '.adamstegman.com']);
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
