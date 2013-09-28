@@ -166,6 +166,7 @@ def commit!
   end
   Dir['output/*'].each do |output_file|
     destination = output_file.sub(/\Aoutput\//, '')
+    puts %x[rm -rf "#{destination}"]
     puts %x[mv "#{output_file}" "#{destination}"]
     puts %x[git add "#{destination}"]
   end
