@@ -45,6 +45,27 @@
     <article itemscope itemtype='http://www.schema.org/BlogPosting'>
       <header>
         <hgroup>
+          <h2 itemprop='name'>NSTokenField failed to query display string for a represented object</h2>
+        </hgroup>
+      </header>
+      <div class='article-body' itemprop='articleBody'>
+        <p>I created an <a href='https://developer.apple.com/library/mac/documentation/cocoa/reference/ApplicationKit/Classes/NSTokenField_Class/Reference/Reference.html'>NSTokenField</a> and everything worked great with strings as tokens. When I created a representative class to use instead, I ended up with an error message and a blank token field.</p>&#x000A;&#x000A;<pre><code>&lt;NSTokenFieldCell: 0x6080003c97e0&gt;: Failed to query display string for a represented object &lt;HMCPhotoTag: 0x608000422460&gt;. Ignoring...</code></pre>&#x000A;&#x000A;<p>Turns out, I just set the <a href='https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSControl_Class/Reference/Reference.html#//apple_ref/occ/instm/NSControl/objectValue'><code>objectValue</code></a> before I set the delegate. Setting the delegate first meant the token field could transform my objects correctly.</p>
+      </div>
+      <footer>
+        <p class='permalink'>
+          <a itemprop="url" href="/nstokenfield-failed-to-query-display-string-for-a-represented-object.html">Permalink</a>
+        </p>
+        <div class='published'>
+          Published at
+          <time datetime='2013-12-02T01:19Z' itemprop='datePublished' pubdate>December 1, 2013 5:19pm</time>
+        </div>
+      </footer>
+    </article>
+  </li>
+  <li>
+    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
+      <header>
+        <hgroup>
           <h2 itemprop='name'>JRuby NameError: missing class or uppercase package name</h2>
         </hgroup>
       </header>

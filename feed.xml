@@ -2,13 +2,25 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>http://blog.adamstegman.com/</id>
   <title>My Kind of Stupid</title>
-  <updated>2013-04-13T19:43:00Z</updated>
+  <updated>2013-12-02T01:19:00Z</updated>
   <link rel="alternate" href="http://blog.adamstegman.com/"/>
   <link rel="self" href="http://blog.adamstegman.com/feed.xml"/>
   <author>
     <name>Adam Stegman</name>
     <uri>http://adamstegman.com/</uri>
   </author>
+  <entry>
+    <id>tag:blog.adamstegman.com,2013-12-02:/nstokenfield-failed-to-query-display-string-for-a-represented-object.html</id>
+    <title type="html">NSTokenField failed to query display string for a represented object</title>
+    <published>2013-12-02T01:19:00Z</published>
+    <updated>2013-12-02T01:19:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/nstokenfield-failed-to-query-display-string-for-a-represented-object.html"/>
+    <content type="html">&lt;p&gt;I created an &lt;a href='https://developer.apple.com/library/mac/documentation/cocoa/reference/ApplicationKit/Classes/NSTokenField_Class/Reference/Reference.html'&gt;NSTokenField&lt;/a&gt; and everything worked great with strings as tokens. When I created a representative class to use instead, I ended up with an error message and a blank token field.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;NSTokenFieldCell: 0x6080003c97e0&amp;gt;: Failed to query display string for a represented object &amp;lt;HMCPhotoTag: 0x608000422460&amp;gt;. Ignoring...&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Turns out, I just set the &lt;a href='https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSControl_Class/Reference/Reference.html#//apple_ref/occ/instm/NSControl/objectValue'&gt;&lt;code&gt;objectValue&lt;/code&gt;&lt;/a&gt; before I set the delegate. Setting the delegate first meant the token field could transform my objects correctly.&lt;/p&gt;</content>
+  </entry>
   <entry>
     <id>tag:blog.adamstegman.com,2013-04-13:/jruby-nameerror-missing-class-or-uppercase-package-name.html</id>
     <title type="html">JRuby NameError: missing class or uppercase package name</title>
