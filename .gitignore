@@ -1,6 +1,6 @@
 .DS_Store
-.rvmrc
 .sass-cache
+Gemfile.lock
 *.log
 output
 tmp
