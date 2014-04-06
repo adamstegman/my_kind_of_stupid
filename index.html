@@ -1,745 +1,1226 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
-    <meta content='en-us' http-equiv='Content-Language'>
-    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
-    <meta name='keywords'>
-    <meta name='description'>
-    <title>Articles - My Kind of Stupid</title>
-    <link href='/feed.xml' rel='alternate' title='Articles' type='application/atom+xml'>
-    <link href='/favicon.ico' rel='icon' type='image/vnd.microsoft.icon'>
-    <link href='/stylesheets/application.css' rel='stylesheet' type='text/css'>
-  </head>
-  <body>
-    <header>
-      <div class='container'>
-        <hgroup>
-          <h1>
-            <a class='title' href='/'>My Kind of Stupid</a>
-          </h1>
-          <h2>Web development, user interfaces, and other development topics.</h2>
-        </hgroup>
-        <nav>
-          <ul class='nav-list'>
-            <li>
-              <a href='/'>Articles</a>
-            </li>
-            <li>
-              <a href='http://adamstegman.com/'>Adam Stegman</a>
-            </li>
-            <li>
-              <a href='http://twitter.com/adamstegman' rel='me'>Twitter</a>
-            </li>
-            <li>
-              <a href='http://github.com/adamstegman' rel='me'>Github</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-    <div class='content'>
-      <div class='container'>
-        <ol class='article-list'>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>NSTokenField failed to query display string for a represented object</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I created an <a href='https://developer.apple.com/library/mac/documentation/cocoa/reference/ApplicationKit/Classes/NSTokenField_Class/Reference/Reference.html'>NSTokenField</a> and everything worked great with strings as tokens. When I created a representative class to use instead, I ended up with an error message and a blank token field.</p>&#x000A;&#x000A;<pre><code>&lt;NSTokenFieldCell: 0x6080003c97e0&gt;: Failed to query display string for a represented object &lt;HMCPhotoTag: 0x608000422460&gt;. Ignoring...</code></pre>&#x000A;&#x000A;<p>Turns out, I just set the <a href='https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSControl_Class/Reference/Reference.html#//apple_ref/occ/instm/NSControl/objectValue'><code>objectValue</code></a> before I set the delegate. Setting the delegate first meant the token field could transform my objects correctly.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/nstokenfield-failed-to-query-display-string-for-a-represented-object.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2013-12-02T01:19Z' itemprop='datePublished' pubdate>December 1, 2013 5:19pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>JRuby NameError: missing class or uppercase package name</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>Originally posted as a <a href='https://gist.github.com/adamstegman/5077010'>gist</a> in response to <a href='https://twitter.com/adamstegman/status/307944394445688832'>this twitter conversation</a>.</p>&#x000A;&#x000A;<p>I&#8217;m working on a Rails application that uses the <a href='http://archive.msdn.microsoft.com/ewsjavaapi'>Exchange Webservices API</a>. Unfortunately the EWS API has a weird package, but I thought that wouldn&#8217;t be hard to overcome. So I wrote this script:</p>&#x000A;&#x000A;<pre><code>require &#39;java&#39;&#x000A;require &#39;vendor/lib/EWSJavaAPI_1.2.jar&#39;&#x000A;&#x000A;def microsoft&#x000A;  Java::Microsoft&#x000A;end&#x000A;&#x000A;version = microsoft.exchange.webservices.data.ExchangeVersion::Exchange2010_SP1&#x000A;service = microsoft.exchange.webservices.data.ExchangeService.new(version)</code></pre>&#x000A;&#x000A;<p>Getting the ExchangeVersion enum worked fine, but trying to access the ExchangeService class resulted in this error:</p>&#x000A;&#x000A;<blockquote>&#x000A;<pre><code>NameError: missing class or uppercase package name (`microsoft.exchange.webservices.data.ExchangeService&#39;)&#x000A;get_proxy_or_package_under_package at org/jruby/javasupport/JavaUtilities.java:54&#x000A;method_missing at file:/Users/adam/.rvm/rubies/jruby-1.7.3/lib/jruby.jar!/jruby/java/java_package_module_template.rb:14&#x000A;(root) at lib/sandbox.rb:11</code></pre>&#x000A;</blockquote>&#x000A;&#x000A;<p>I thought the problem was with the package name, but the error is actually that the EWS API is missing its dependencies. It needed commons-httpclient and commons-logging-api on the classpath. I discovered this via clojure&#8217;s error message for similar code:</p>&#x000A;&#x000A;<pre><code>(import &#39;(microsoft.exchange.webservices.data ExchangeService))</code></pre>&#x000A;&#x000A;<blockquote>&#x000A;<pre><code>ClassNotFoundException org.apache.commons.httpclient.HttpConnectionManager  java.net.URLClassLoader$1.run (URLClassLoader.java:366)</code></pre>&#x000A;</blockquote>&#x000A;&#x000A;<p>So the real issue here is JRuby&#8217;s error message. Interestingly enough, JRuby did give me a better error once commons-httpclient was on the classpath:</p>&#x000A;&#x000A;<blockquote>&#x000A;<pre><code>MultiThreadedHttpConnectionManager.java:70:in `&lt;clinit&gt;&#39;: java.lang.NoClassDefFoundError: org/apache/commons/logging/LogFactory</code></pre>&#x000A;</blockquote>&#x000A;&#x000A;<p>That told me commons-logging-api was also missing. JRuby should have told me that in the first place.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/jruby-nameerror-missing-class-or-uppercase-package-name.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2013-04-13T19:43Z' itemprop='datePublished' pubdate>April 13, 2013, 2:43 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://raganwald.posterous.com/a-conjecture-about-code-reviews'>
-              <span itemprop='name headline'>Code Reviews</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <blockquote>&#x000A;<p>Imagine if we didn’t judge the author of the code by how few “WTFs” it generated, but instead by how fertile it was for discussion? Or, imagine if every programmer was being judged by what they learned from the discussion. How would that change things? better still, imagine if the “manager&#8217;s” job was to facilitate the learning and get the discussion back on track when it strayed into fixing-the-code territory instead of to judge people by how much they &#8220;contribute.&#8221; That would be a breath of fresh air to most teams.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>An excellent point. Code reviews are valuable for getting eyes on the code, but I agree with Raganwald here that the more valuable outcome is that everyone shares in the learning. I&#8217;ve thought of that as learning <em>about</em> the work that others are doing, but Raganwald makes a good point that you learn from the <em>discussion</em> about the work that others are doing.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/code-reviews.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2012-10-05T00:20Z' itemprop='datePublished' pubdate>October 4, 2012 7:20pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='https://twitter.com/KentBeck/status/253532726714580992'>
-              <span itemprop='name headline'>Kent Beck on Pair Programming</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <blockquote>&#x000A;<p>pair programming works best with a large uncertain search space of problems and solutions. the closer to a solved problem, the less it helps</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>- <a href='https://twitter.com/KentBeck'>Kent Beck</a> (<a href='https://twitter.com/KentBeck'>@KentBeck</a>)</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/kent-beck-on-pair-programming.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2012-10-04T01:29Z' itemprop='datePublished' pubdate>October 3, 2012 8:29pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Implementing a Mutable Subclass in Objective-C</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I&#8217;m writing a class in <a href='http://adamstegman.com/projects/git-push.html'>Git Push</a> to hold and fetch git blobs from <a href='http://developer.github.com/v3/git/blobs/'>Github</a>.</p>&#x000A;&#x000A;<pre><code>@interface GHBlob : NSObject &lt;NSCopying, NSMutableCopying&gt;&#x000A;@property (nonatomic, copy, readonly) NSData *content;&#x000A;...&#x000A;@end&#x000A;&#x000A;@implementation GHBlob&#x000A;@synthesize content = _content;&#x000A;...&#x000A;@end</code></pre>&#x000A;&#x000A;<p>To support creating and updating blobs, I wrote a mutable subclass initialized in #mutableCopy from <a href='http://developer.apple.com/library/ios/#documentation/Cocoa/Reference/Foundation/Protocols/NSMutableCopying_Protocol/Reference/Reference.html#//apple_ref/occ/intf/NSMutableCopying'>NSMutableCopying</a>. This entailed redefining properties as <code>readwrite</code>:</p>&#x000A;&#x000A;<pre><code>@interface GHMutableBlob : GHBlob&#x000A;@property (nonatomic, copy, readwrite) NSData *content;&#x000A;...&#x000A;@end&#x000A;&#x000A;@implementation GHMutableBlob&#x000A;@synthesize content = _content;&#x000A;...&#x000A;@end</code></pre>&#x000A;&#x000A;<h3 id='problems'>Problems</h3>&#x000A;&#x000A;<h4 id='resynthesizing'>Resynthesizing</h4>&#x000A;&#x000A;<p>As shown above, I also re-synthesized the methods in the subclass. However, this resulted in the subclass&#8217;s initializer breaking.</p>&#x000A;&#x000A;<pre><code>GHBlob *newBlob = [blob mutableCopy];&#x000A;STAssertEquals(newBlob.content, blob.content, nil);&#x000A;  //=&gt; &#39;&lt;00000000&gt;&#39; should be equal to &#39;&lt;10cbb806&gt;&#39;</code></pre>&#x000A;&#x000A;<p>On review, I noticed something I&#8217;d missed before in <a href='http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocProperties.html'>Apple&#8217;s documentation on redeclaring properties</a>. The redeclared property isn&#8217;t synthesized in their example, it&#8217;s declared <code>@dynamic</code> and the setter is defined by hand. I scoffed at the inconvenience (isn&#8217;t this what synthesizing is supposed to avoid?), but did it anyway.</p>&#x000A;&#x000A;<h4 id='unreachable_instance_variables'>Unreachable instance variables</h4>&#x000A;&#x000A;<p>Next, the compiler complained that the <code>_content</code> instance variable was unreachable. Oh, <a href='http://stackoverflow.com/questions/5015130/do-properties-have-to-be-declared-as-instance-variables-in-objective-c#answer-5015657'>so <em>this</em> is why we define ivars in the interface</a> - it makes them available to subclasses.</p>&#x000A;&#x000A;<h3 id='summary'>Summary</h3>&#x000A;&#x000A;<p>So to implement <code>NSMutableCopying</code>, I had to explicitly declare my instance variables in the interface and explicitly define setter methods in my mutable subclass. I thought the property/synthesize syntax was <a href='http://mobile.dzone.com/news/open-letter-apple-please-kill'>saving me the trouble</a>, but apparently it&#8217;s not all rainbows and unicorns.</p>&#x000A;&#x000A;<pre><code>@interface GHBlob : NSObject &lt;NSCopying, NSMutableCopying&gt; {&#x000A;  NSData *_content;&#x000A;}&#x000A;@property (nonatomic, copy, readonly) NSData *content;&#x000A;...&#x000A;@end&#x000A;&#x000A;@implementation GHBlob&#x000A;@synthesize content = _content;&#x000A;@end</code></pre>&#x000A;&#x000A;<p>And in the mutable subclass:</p>&#x000A;&#x000A;<pre><code>@interface GHMutableBlob : GHBlob&#x000A;@property (nonatomic, copy, readwrite) NSData *content;&#x000A;...&#x000A;@end&#x000A;&#x000A;@implementation GHMutableBlob&#x000A;@dynamic content;&#x000A;- (void)setContent:(NSData *)content {&#x000A;  _content = [content copy];&#x000A;}</code></pre>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/implementing-a-mutable-subclass-in-objective-c.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2012-01-06T06:31Z' itemprop='datePublished' pubdate>January 6, 2012 12:31am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Nil Weak Reference to an OCMock Mock Object</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>While I was working on unit tests for <a href='http://adamstegman.com/projects/git-push.html'>Git Push</a>, I wanted to mock my delegate so I could create an expectation. So I used <a href='http://ocmock.org/'>OCMock</a>:</p>&#x000A;&#x000A;<pre><code>id delegate = [OCMockObject mockForProtocol:@protocol(MyDelegateProtocol)];&#x000A;[[delegate expect] someMethod];&#x000A;myClassIvar.connectionDelegate = delegate;&#x000A;[myClassIvar someOtherMethod];&#x000A;STAssertNoThrow([delegate verify], @&quot;should have called someMethod on delegate&quot;);</code></pre>&#x000A;&#x000A;<p>But found the assertion failing. I stepped into #someOtherMethod and discovered the delegate was nil. So I added</p>&#x000A;&#x000A;<pre><code>STAssertNotNil(myClassIvar.connectionDelegate, @&quot;should have set delegate&quot;);</code></pre>&#x000A;&#x000A;<p>And watched that fail as well. Since Git Push is using <a href='http://developer.apple.com/technologies/ios5/'>ARC</a>, I <a href='http://clang.llvm.org/docs/AutomaticReferenceCounting.html#objects'>read up on retain semantics</a> to see if I was missing something about local references. But local references are strong, so the delegate should not have been deallocated yet.</p>&#x000A;&#x000A;<p>I <a href='http://stackoverflow.com/questions/8675054/why-is-my-objects-weak-delegate-property-nil-in-my-unit-tests'>posted about this issue on Stack Overflow</a> <sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup>, where Evan suggested that OCMock may be the issue. Sure enough, creating an explicit class conforming to my delegate protocol fixed the issue.</p>&#x000A;&#x000A;<pre><code>@interface MockDelegate : NSObject &lt;MyDelegateProtocol&gt;&#x000A;@property (nonatomic, strong) NSNumber *called;&#x000A;@end&#x000A;@implementation MockDelegate&#x000A;@synthesize called = _called;&#x000A;- (void)someMethod {&#x000A;  _called = [NSNumber numberWithBool:YES];&#x000A;}&#x000A;@end&#x000A;&#x000A;@implementation MyClassTests&#x000A;- (void)testSomeOtherMethod {&#x000A;  MockDelegate *delegate = [[MockDelegate alloc] init];&#x000A;  myClassIvar.connectionDelegate = delegate;&#x000A;  [myClassIvar someOtherMethod];&#x000A;  STAssertTrue([delegate.called boolValue], @&quot;should have called someMethod on delegate&quot;);&#x000A;}&#x000A;@end</code></pre>&#x000A;&#x000A;<p>I still don&#8217;t understand why it was being deallocated, but it was definitely related to OCMock. I&#8217;ve isolated the issue in <a href='https://github.com/adamstegman/ARCMock'>a Github repo</a> to make it obvious and repeatable.</p>&#x000A;&#x000A;<p>UPDATE: Erik Doernenberg of OCMock looked into the issue and answered the Stack Overflow question as well, and determined it&#8217;s actually an issue with NSProxy objects and ARC in the iOS runtime. It works fine on OS X.</p>&#x000A;<div class='footnotes'><hr /><ol><li id='fn:1'>&#x000A;<p>Note that my code is slightly different, as I was using a static helper function to create my mock. I confirmed that was not the issue.</p>&#x000A;<a href='#fnref:1' rev='footnote'>&#8617;</a></li></ol></div>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/nil-weak-reference-to-an-ocmock-mock-object.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2012-01-02T21:55Z' itemprop='datePublished' pubdate>January 2, 2012 3:55pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='https://gist.github.com/1174851'>
-              <span itemprop='name headline'>fillion.rb</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>Yesterday Nathan Fillion <a href='http://twitter.com/NathanFillion/statuses/106853202909073409'>tweeted</a> about finding a permutation of his name on a website. At first I just chuckled, but it soon occurred to me that this would be a fun problem to solve with scripting.</p>&#x000A;&#x000A;<p>So I whipped up <a href='https://gist.github.com/1174851'>fillion.rb</a> to peruse a webpage for permutations of a given word. It was fun to figure out a quick algorithm to find permutations, and then fight scope creep (I ended up writing a crawler for an entire domain).</p>&#x000A;&#x000A;<p>The beauty of development is being able to look for a challenge anywhere.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/fillion-rb.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-08-27T01:48Z' itemprop='datePublished' pubdate>August 26, 2011, 8:48 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>URL-Driven Development is README-Driven Development</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>While working on <a href='http://adamstegman.com/projects/web-queue.html'>Web Queue</a> today I went to document the URLs to help me figure out the interface. As I was about to start writing out the URLs, I realized I could make it a lot easier on myself by giving the document some structure. So I decided to roll it into the README, which also needed to be written.</p>&#x000A;&#x000A;<p>As I wrote up the README, everything became a bit clearer. Up to that point, I had been fussing over details, learning how to use OAuth and the Netflix API while poorly maintaining a few different classes. Writing the README allowed me to step back and conceive the system as a whole, which made the necessary code much more clear to me. That&#8217;s README-driven development.</p>&#x000A;&#x000A;<p>My projects often go like this. I&#8217;m almost always learning a new technology or library, so I can&#8217;t always start off with a good architecture. But starting with the interface can make things a lot clearer.</p>&#x000A;&#x000A;<p>Writing out the URLs for a project is pretty similar to writing the README. It has the same goal, figuring out the interface of a project, but focused on web applications instead of any other project. And as I&#8217;m learning from personal experience, that can be exactly what&#8217;s needed for a good project.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/url-driven-development-is-readme-driven-development.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-08-06T19:42Z' itemprop='datePublished' pubdate>August 6, 2011, 2:42 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://adamstegman.com/'>
-              <span itemprop='name headline'>New Site</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <blockquote>&#x000A;<p>I am very excited by the Internet and how easy it is today to get a project started.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Case in point, <a href='http://adamstegman.com/'>my new site</a>.</p>&#x000A;&#x000A;<p>I&#8217;m also hosting <a href='http://blog.adamstegman.com/'>my blog</a> there now.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/new-site.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-08-04T01:56Z' itemprop='datePublished' pubdate>August 3, 2011, 8:56 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>TIL, Grails edition</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I’ve unfortunately been experiencing the magic of Grails lately.</p>&#x000A;&#x000A;<p>TIL:</p>&#x000A;&#x000A;<pre><code>new JSONObject([key: []]) == new JSONObject([key: []])</code></pre>&#x000A;&#x000A;<p>and</p>&#x000A;&#x000A;<pre><code>new JSONArray([]) == new JSONArray([])</code></pre>&#x000A;&#x000A;<p>but</p>&#x000A;&#x000A;<pre><code>new JSONObject([key: new JSONArray([])]) != new JSONObject([key: new JSONArray([])])</code></pre>&#x000A;&#x000A;<p>This is so much fun.</p>&#x000A;&#x000A;<p>Update: This is due to a non-implementation of <code>JSONArray.hashCode()</code>. JIRA logged here: <a href='http://jira.grails.org/browse/GRAILS-7770'>http://jira.grails.org/browse/GRAILS-7770</a></p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/til-grails-edition.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-07-21T17:38Z' itemprop='datePublished' pubdate>July 21, 2011, 10:38 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Write a README</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>Reading code documentation to understand a system is like learning how to drive by inspecting the washer fluid dispenser, then a spark plug, then the brake pads. Write a README.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/write-a-readme.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-07-13T06:09Z' itemprop='datePublished' pubdate>July 13, 2011, 11:09 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://blog.jitbit.com/2011/06/90-of-your-users-are-idiots.html'>
-              <span itemprop='name headline'>90% of your users are "idiots"</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <blockquote>&#x000A;<p>And, in good conscience, don’t you want to be an idiot when you’re on the other side of the screen? I do! I want to be an idiot! Please let me be an idiot. I want things to “just work”.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Completely agree. It&#8217;s easy to lose sight of this.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/90-percent-of-your-users-are-idiots.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-06-29T17:56Z' itemprop='datePublished' pubdate>June 29, 2011, 10:56 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Silence Test::Unit tests</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I&#8217;ve written several tests that have the unfortunate side effect of writing to stdout or stderr, polluting my pretty stream of dots.</p>&#x000A;&#x000A;<p>Thanks to a <a href='http://benevolentcode.com/2011/03/temporarily-redirect-stdout-in-ruby/'>post on Benevolent Code</a>, I decided to silence them.</p>&#x000A;<script src='https://gist.github.com/926853.js'> </script>&#x000A;<p>Update:</p>&#x000A;&#x000A;<p>The same thing in RSpec:</p>&#x000A;<script src='https://gist.github.com/926858.js'> </script>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/silence-test-unit-tests.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-04-19T04:20Z' itemprop='datePublished' pubdate>April 18, 2011, 11:20 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Quoted-printable in Ruby</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I&#8217;m working on reading emails sent from ActionMailer, and was noticing the weird form of what I thought was URL-encoding in an HTML section of a multipart email, e.g.</p>&#x000A;&#x000A;<pre><code>&lt;html lang=3D&quot;en&quot;&gt;</code></pre>&#x000A;&#x000A;<p>I also noticed the line length and endings:</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>blah blah &#8230; blah bl=<br />ah blah blah</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>I shrugged these off as quirks of ActionMailer or SMTP and moved on to removing/decoding them.</p>&#x000A;&#x000A;<p>Two hours later, when googling for info about them because they didn&#8217;t seem consistent, I stumbled across <a href='http://en.wikipedia.org/wiki/Quoted-printable'>Quoted-printable encoding</a>. I recognized it from the headers in the email, and wondered if someone had written a gem or something to decode it. Then I find <a href='http://rubydoc.info/stdlib/core/1.8.7/String#unpack-instance_method'>this</a> - String#unpack was able to do it for me all along.</p>&#x000A;&#x000A;<p>It&#8217;s great that Ruby (and sometimes Rails) can do things like this out of the box. I just wish I was smart enough to look.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/quoted-printable-in-ruby.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-02-10T03:31Z' itemprop='datePublished' pubdate>February 9, 2011, 9:31 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Test-Driven Drudgery</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I&#8217;ll admit it. I hate test-driven development while I&#8217;m actually doing it. It&#8217;s boring and tedious. I get lost in details while trying to get some test to work. Maybe I just need to do more <a href='http://thecleancoder.blogspot.com/2010/10/craftsman-62-dark-path.html'>katas</a>, but it gets old fast.</p>&#x000A;&#x000A;<p>Katas make it look so nice and easy. You just think of the right test, write it, and make it pass. But in practice I have a much bigger picture in mind that I want to implement, and I just can&#8217;t limit myself to building it one atom at a time, or I&#8217;ll lose it. Sometimes, I just want to hack.</p>&#x000A;&#x000A;<p>So I can sympathize when I see people writing a bunch of code to get some massive feature ready, and then filling in tests at the end. But it&#8217;s wrong. It seems harmless (&#8221;I&#8217;m still testing, right?&#8221;) because the difference can be subtle. Writing tests after the fact means you&#8217;re writing your tests to fit your code, instead of the other way around. You&#8217;re trying to achieve that code coverage metric instead of thinking hard about each feature, branch, and interface.</p>&#x000A;&#x000A;<p>Just like writing code without TDD, it can often work just fine. But it&#8217;s not scalable and it results in poorly-tested and/or poorly-written code.</p>&#x000A;&#x000A;<p>I&#8217;m not just preaching, I live this dilemma every day. TDD sucks, but man, does it ever improve the quality of my code.</p>&#x000A;&#x000A;<p>Sometimes I just hack. But most of the time, I drop in TODO&#8217;s where I need to remember a big picture and get to testing first.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/test-driven-drudgery.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2011-01-05T21:56Z' itemprop='datePublished' pubdate>January 5, 2011, 3:56 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://about.me/adamstegman'>
-              <span itemprop='name headline'>About.me</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I made an about.me page. At the very least, it will be a central repository for where to find me. Hopefully I can get a better background eventually.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/about-me.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-12-03T07:30Z' itemprop='datePublished' pubdate>December 3, 2010, 1:30 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>ActiveRecord Hangs On to Destroyed Relations</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>Rails&#8217; ActiveRecord has a nifty #destroy method that almost everyone already knows about. The documentation for #destroy <sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup> <sup id='fnref:2'><a href='#fn:2' rel='footnote'>2</a></sup> helpfully states</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>Deletes the record in the database and freezes this instance to reflect that no changes should be made (since they can’t be persisted).</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>What is less clear is how it works when you call it on a relationship. To be sure, it destroyed the database record. What it also unfortunately does it hangs on to the reference in the parent object.</p>&#x000A;&#x000A;<p>Let&#8217;s throw down with some sample code.</p>&#x000A;&#x000A;<pre><code>class Thing &lt; ActiveRecord::Base&#x000A;  has_one :child&#x000A;end&#x000A;&#x000A;class Child &lt; ActiveRecord::Base&#x000A;  belongs_to :thing&#x000A;end&#x000A;&#x000A;zengarden&gt; thing = Thing.new&#x000A;th=&gt; #&lt;Thing id: nil, name: nil, created_at: nil, updated_at: nil&gt;&#x000A;zengarden&gt; thing.save&#x000A;=&gt; true&#x000A;zengarden&gt; thing.create_child :name =&gt; &quot;Child&quot;&#x000A;=&gt; #&lt;Child id: 4, name: &quot;Child&quot;, thing_id: 1,...&gt;&#x000A;zengarden&gt; thing.child&#x000A;=&gt; #&lt;Child id: 4, name: &quot;Child&quot;, thing_id: 1...&gt;&#x000A;zengarden&gt; thing.child.destroy&#x000A;=&gt; #&lt;Child id: 4, name: &quot;Child&quot;, thing_id: 1...&gt;&#x000A;zengarden&gt; thing.child&#x000A;=&gt; #&lt;Child id: 4, name: &quot;Child&quot;, thing_id: 1...&gt;</code></pre>&#x000A;&#x000A;<p>Arg. I just destroyed it! I don&#8217;t want it hanging around in my cache. If I really wanted to save it, I should have saved it before or during the destroy call. I can of course invalidate my cache by calling</p>&#x000A;&#x000A;<pre><code>thing.child(true)</code></pre>&#x000A;&#x000A;<p>which correctly returns nil. But if I don&#8217;t know to do that immediately after the destroy, I get errors like</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>TypeError: can&#8217;t modify frozen hash</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>because code used later naïvely calls</p>&#x000A;&#x000A;<pre><code>if thing.child&#x000A;  thing.child.attributes = new_attributes&#x000A;end</code></pre>&#x000A;&#x000A;<p>expecting that if a child exists, it should be updated.</p>&#x000A;&#x000A;<p>For the sake of argument, let&#8217;s say that maybe the behavior isn&#8217;t so bad, maybe this is what people expect or could use. In that case, what a terrible error message. I&#8217;m not familiar enough with the Associations internals to suggest where a better one could be injected, but something along the lines of</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>Can&#8217;t modify a destroyed record</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>would be miles better.</p>&#x000A;<div class='footnotes'><hr /><ol><li id='fn:1'>&#x000A;<p>Rails 3 - <a href='http://railsapi.com/doc/rails-v3.0.0/classes/ActiveRecord/Persistence.html#M001019'>http://railsapi.com/doc/rails-v3.0.0/classes/ActiveRecord/Persistence.html#M001019</a></p>&#x000A;<a href='#fnref:1' rev='footnote'>&#8617;</a></li><li id='fn:2'>&#x000A;<p>Rails 2.3.8 - <a href='http://railsapi.com/doc/rails-v2.3.8/classes/ActiveRecord/Base.html#M001111'>http://railsapi.com/doc/rails-v2.3.8/classes/ActiveRecord/Base.html#M001111</a></p>&#x000A;<a href='#fnref:2' rev='footnote'>&#8617;</a></li></ol></div>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/activerecord-hangs-on-to-destroyed-relations.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-10-25T18:31Z' itemprop='datePublished' pubdate>October 25, 2010, 1:31 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='https://chrome.google.com/extensions/detail/mffbgadohiiggcibdgmogfdlmackfbhm'>
-              <span itemprop='name headline'>Read Link Later Works With New Twitter</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>Version 1.1.0 of Read Link Later now works with New Twitter. Rejoice!</p>&#x000A;&#x000A;<p>Sorry for the delay. New Twitter came to me at a bad time, where I didn&#8217;t have the time to devote to updating Read Link Later. Fortunately, we&#8217;re in business now!</p>&#x000A;&#x000A;<p>The only issue is that the New Twitter uses their own API through JavaScript, so I don&#8217;t have a way of knowing when a tweet is loaded. To work around this, I look for new tweets to add the Read Later links to every 100 ms. If I could hack in a custom event, that would be something.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/read-link-later-works-with-new-twitter.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-10-20T12:27Z' itemprop='datePublished' pubdate>October 20, 2010, 7:27 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Complex Associations with factory_girl</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p><a href='http://github.com/thoughtbot/factory_girl'>factory_girl</a> is great for DRYing up test code and making tests isolated and maintainable. What it&#8217;s not so great at is any <a href='http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html'>association</a> more complicated than has_one/belongs_to. I found <a href='http://stackoverflow.com/questions/2937326/populating-an-association-with-children-in-factory-girl'>a nice trick on Stack Overflow</a> for has_many associations.</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>The Factory.after_ hooks appear to be the only way to do this successfully.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>It&#8217;s a shame, because it makes it really painful to use factories. What used to be a one-line call to create whatever you need becomes writing your own factories that call factory_girl factories.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/complex-associations-with-factory-girl.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-08-18T19:00Z' itemprop='datePublished' pubdate>August 18, 2010, 2:00 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='https://chrome.google.com/extensions/detail/mffbgadohiiggcibdgmogfdlmackfbhm'>
-              <span itemprop='name headline'>Read Link Later</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I&#8217;m excited to publish my first Google Chrome extension, Read Link Later. From the detail page:</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>Read Link Later adds an Instapaper &#8220;Read Later&#8221; link to each tweet in a Twitter.com feed. The link retrieves each external URL in the tweet and adds it to your Instapaper queue for reading later.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Unfortunately I can&#8217;t add these links to clients, that would be even more helpful.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/read-link-later.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-08-16T04:35Z' itemprop='datePublished' pubdate>August 15, 2010, 11:35 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Happiness</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p><a href='http://iwasamonkey.tumblr.com/post/915222642/happiness'>iwasamonkey</a>:</p>&#x000A;&#x000A;<blockquote>&#x000A;<p><img alt='Happiness' src='/images/happiness.jpg' /></p>&#x000A;&#x000A;<p>Happiness</p>&#x000A;</blockquote>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/happiness.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-08-07T03:17Z' itemprop='datePublished' pubdate>August 6, 2010, 10:17 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://www.gobolinux.org/'>
-              <span itemprop='name headline'>GoboLinux</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p><a href='http://onethingwell.org/post/898477013/gobolinux'>onethingwell</a>:</p>&#x000A;&#x000A;<blockquote>&#x000A;<blockquote>&#x000A;<p>GoboLinux is a modular Linux distribution: it organizes the programs in your system in a new, logical way. Instead of having parts of a program thrown at <code>/usr/bin</code>, other parts at <code>/etc</code> and yet more parts thrown at</p>&#x000A;&#x000A;<pre><code>/usr/share/something/or/another</code></pre>&#x000A;&#x000A;<p><em>each program gets its own directory tree</em>, keeping them all neatly separated and allowing you to see everything that’s installed in the system and which files belong to which programs in a simple and obvious way.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Off-topic, I know, but this strikes me as an eminently sensible approach.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Sounds like what OS X does with applications. Very sensible.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/gobolinux.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-08-03T15:19Z' itemprop='datePublished' pubdate>August 3, 2010, 10:19 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Grid Layout As Bad As Table Layout?</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>The more I think about this, the more this statement bothers me. <a href='http://twitter.com/tavon'>@tavon</a> said that grid layouts like <a href='http://960.gs/'>960 grid</a> are as bad as table layouts. His reasoning was that the classes are purely presentational; it&#8217;s presentation affecting markup the same way tables used to.</p>&#x000A;&#x000A;<p>But that&#8217;s just misuse of the layouts. You shouldn&#8217;t pull something massive and generic like a grid layout and not modify it to suit your website. Wouldn&#8217;t you modify your reset stylesheet to match the styles your website uses? Use your existing class names instead of the presentational grid class names, and remove the classes you don&#8217;t need. These third party tools are not holy relics - change them to what you need!</p>&#x000A;&#x000A;<p>That doesn&#8217;t mean they can&#8217;t or don&#8217;t affect markup inappropriately. I haven&#8217;t used a grid layout, so I&#8217;m not familiar with what&#8217;s required. But the generated styles aren&#8217;t inherently bad, they just need to be adapted.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/grid-layout-as-bad-as-table-layout.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-07-17T05:06Z' itemprop='datePublished' pubdate>July 17, 2010, 12:06 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Don't Override System Shortcuts</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>I&#8217;ve had to uninstall <a href='http://code.leadmediapartners.com/'>RubyAMP</a>, a TextMate bundle that I use several times a day, because it overrode Ctrl+B and refused to let me change it.</p>&#x000A;&#x000A;<p>I realize most people don&#8217;t use these shortcuts, so I&#8217;ll explain it. Ctrl+B moves the cursor back one character, the equivalent of the left arrow key without having to move your hands. My workflow uses Ctrl+B so constantly that I couldn&#8217;t live with RubyAMP anymore, even though I enjoy its functionality.</p>&#x000A;&#x000A;<p>The reason this is so negative is the fact that Ctrl+B is not a shortcut that I added; it&#8217;s part of OS X. If you are creating keyboard shortcuts for your program or extension, you can&#8217;t possibly avoid stepping on every other program&#8217;s toes. But the least you can do is avoid stepping on the operating system&#8217;s toes. Otherwise it&#8217;s just negligent, user-hostile design.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/dont-override-system-shortcuts.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-06-29T14:31Z' itemprop='datePublished' pubdate>June 29, 2010, 9:31 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2 itemprop='name'>Thanks, Captain Obvious</h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <blockquote>&#x000A;<p>This viral ad for <em>Civilization V</em> about people trying to kick their <em>Civ</em> habit will probably just make you want to pick the game up again.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Wow, it&#8217;s almost like that&#8217;s what they intended.</p>&#x000A;&#x000A;<p><a href='http://www.escapistmagazine.com/news/view/101565-Civ-Anonymous-Where-You-Go-to-Stop-Taking-Another-Turn'>Source</a></p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/thanks-captain-obvious.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-06-22T20:43Z' itemprop='datePublished' pubdate>June 22, 2010, 3:43 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://thenerdary.net/articles/entry/onclick-is-your-friend'>
-              <span itemprop='name headline'>onclick is Your Friend</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>Mark asserts that while using onclick is frowned upon, it&#8217;s faster and cleaner:</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>Sure it makes your XHTML a bit longer, but that’s one less selector jQuery has to parse and one less DOMReady function your browser has to kick off.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>That&#8217;s <em>true</em>, but it comes at the cost of maintainability. Putting the jQuery example he provided into an external file makes it easier to maintain by having all the JavaScript in predictable and findable places.</p>&#x000A;&#x000A;<p>Additionally, that performance hit can be mitigated by using progressive enhancement to give the entire page functionality immediately, then asynchronously loading the JavaScript to enhance it. Asynchronously loading your JS may or may not even be necessary, depending on your JS payload.</p>&#x000A;&#x000A;<p>Using inline code like this isn&#8217;t necessary for most people; they just make your code harder to read.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/onclick-is-your-friend.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-06-21T23:00Z' itemprop='datePublished' pubdate>June 21, 2010, 6:00 pm</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://garann.wordpress.com/2010/06/19/defending-terrible-things/'>
-              <span itemprop='name headline'>Defending Terrible Things</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <blockquote>&#x000A;<p>You know what would annoy the shit out of me if I were using a screen reader to read a bibliography on the internet? Listening to a goofy-sounding computer voice try to emphasize every single word of <em>Journal of the Study of Obscure and Mostly-in-Latin Canine Diseases Affecting Generally the Respiratory System but Also Sometimes the Lymph Nodes</em> or something. I don’t know that this is still a problem, but the idea is ridiculous in and of itself. Italic does not always mean emphasis, nor does bold always mean MAKE THIS LOUD.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Hey, you know, that&#8217;s true. That&#8217;s what &#60;b&#62; and &#60;i&#62; should be used for. Here&#8217;s what they <em>shouldn&#8217;t</em> be used for, from the same article:</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>The bold and italic tags are short. The emphasis tag isn’t bad, but the strong tag is way too long to be a good value per keystroke.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Yeah, semantic HTML uses tags that are longer than one character. &#60;strong&#62; is five whole more letters than &#60;b&#62;! Sounds like someone who throws around a lot of &#8220;u&#8221;instead of &#8220;you&#8221;, and &#8220;y&#8221; instead of &#8220;why&#8221; in textual conversations. Not someone I&#8217;d want to take design advice from.</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>I add</p>&#x000A;&#x000A;<pre><code>&lt;b&gt;</code></pre>&#x000A;&#x000A;<p>and</p>&#x000A;&#x000A;<pre><code>&lt;i&gt;</code></pre>&#x000A;&#x000A;<p>to things I don’t necessarily want bolded or italicized. I do it because they’re some of the shortest elements available and they provide a hook to style child elements in larger repeated widgets with very precise, complex layouts. If I have to wrap every word of text in a tag just to accomplish some goofy layout, I’m using the smallest thing available.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>That sounds like a pretty poor layout.</p>&#x000A;&#x000A;<p>Bottom line is, &#60;b&#62; and &#60;i&#62; have their place, but it&#8217;s not showing emphasis, nor is it saving keystrokes or because this layout is kinda complicated and I want some easy hooks.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/defending-terrible-things.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-06-20T05:14Z' itemprop='datePublished' pubdate>June 20, 2010, 12:14 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://powazek.com/posts/1063'>
-              <span itemprop='name headline'>Comments are hard work.</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>And no one wants to put in that much work.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/comments-are-hard-work.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-06-17T15:13Z' itemprop='datePublished' pubdate>June 17, 2010, 10:13 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-  <li>
-    <article itemscope itemtype='http://www.schema.org/BlogPosting'>
-      <header>
-        <hgroup>
-          <h2>
-            <a href='http://blogs.hbr.org/bregman/2010/06/why-i-returned-my-ipad.html'>
-              <span itemprop='name headline'>This is why we can't have nice things.</span>
-            </a>
-          </h2>
-        </hgroup>
-      </header>
-      <div class='article-body' itemprop='articleBody'>
-        <p>The top-voted comments here are a great example of why people are agreeing with <a href='http://daringfireball.net/2010/06/whats_fair'>John Gruber&#8217;s assessment of comments</a>.</p>&#x000A;&#x000A;<blockquote>&#x000A;<p>What makes DF an efficient and effective soapbox is exactly that it is <em>not</em> noisy. My goal is for not a single wasted word to appear anywhere on any page of the site.</p>&#x000A;</blockquote>&#x000A;&#x000A;<p>Those comments distract from the article with fiery, irrelevant rants that show the authors didn&#8217;t even RTFA. The whole point of the article is lost if you start reading them.</p>
-      </div>
-      <footer>
-        <p class='permalink'>
-          <a itemprop="url" href="/this-is-why-we-cant-have-nice-things.html">Permalink</a>
-        </p>
-        <div class='published'>
-          Published at
-          <time datetime='2010-06-17T15:08Z' itemprop='datePublished' pubdate>June 17, 2010, 10:08 am</time>
-        </div>
-      </footer>
-    </article>
-  </li>
-</ol>
-      </div>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Content-Language" content="en-us"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="keywords" content=""/>
+  <meta name="description" content=""/>
+  <title>Articles - My Kind of Stupid</title>
+  <link type="application/atom+xml" href="/feed.xml" rel="alternate" title="Articles"/>
+  <link type="image/vnd.microsoft.icon" href="/favicon.ico" rel="icon"/>
+  <link type="text/css" href="/stylesheets/application.css" rel="stylesheet"/>
+  
+</head>
+<body>
+  <header>
+    <div class="container">
+      <hgroup>
+        <h1><a href="/" class="title">My Kind of Stupid</a></h1>
+        <h2>Web development, user interfaces, and other development topics.</h2>
+      </hgroup>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="/">Articles</a></li>
+          <li><a href="http://adamstegman.com/">Adam Stegman</a></li>
+          <li><a rel="me" href="http://twitter.com/adamstegman">Twitter</a></li>
+          <li><a rel="me" href="http://github.com/adamstegman">Github</a></li>
+      </nav>
     </div>
-    <footer>
-      <div class='container'>
-        <section class='author'>
-          <h2>
-            Written by
-            <a href='http://adamstegman.com/' rel='author'>Adam Stegman</a>
-          </h2>
-          <ul class='contact'>
-            <li>
-              <a href='http://twitter.com/adamstegman'>Follow me on Twitter</a>
-            </li>
-            <li>
-              <a href='http://github.com/adamstegman'>Follow me on Github</a>
-            </li>
-            <li>
-              <a href='http://profiles.google.com/adam.stegman'>Google Profile</a>
-            </li>
-            <li>
-              <a href='mailto:me@adamstegman.com'>Email me</a>
-            </li>
-          </ul>
-        </section>
-      </div>
-    </footer>
-    <script>
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-24951237-1']);
-      _gaq.push(['_setDomainName', '.adamstegman.com']);
-      _gaq.push(['_trackPageview']);
-      
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-  </body>
+  </header>
+  <div class="content">
+    <div class="container">
+      <ol class="article-list">
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">NSTokenField failed to query display string for a represented object</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I created an <a href='https://developer.apple.com/library/mac/documentation/cocoa/reference/ApplicationKit/Classes/NSTokenField_Class/Reference/Reference.html'>NSTokenField</a> and everything worked great with strings as tokens. When I created a representative class to use instead, I ended up with an error message and a blank token field.</p>
+
+<pre><code>&lt;NSTokenFieldCell: 0x6080003c97e0&gt;: Failed to query display string for a represented object &lt;HMCPhotoTag: 0x608000422460&gt;. Ignoring...</code></pre>
+
+<p>Turns out, I just set the <a href='https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSControl_Class/Reference/Reference.html#//apple_ref/occ/instm/NSControl/objectValue'><code>objectValue</code></a> before I set the delegate. Setting the delegate first meant the token field could transform my objects correctly.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/nstokenfield-failed-to-query-display-string-for-a-represented-object.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2013-12-02T01:19Z" pubdate="true" itemprop="datePublished">
+              December 1, 2013 5:19pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">JRuby NameError: missing class or uppercase package name</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>Originally posted as a <a href='https://gist.github.com/adamstegman/5077010'>gist</a> in response to <a href='https://twitter.com/adamstegman/status/307944394445688832'>this twitter conversation</a>.</p>
+
+<p>I&#8217;m working on a Rails application that uses the <a href='http://archive.msdn.microsoft.com/ewsjavaapi'>Exchange Webservices API</a>. Unfortunately the EWS API has a weird package, but I thought that wouldn&#8217;t be hard to overcome. So I wrote this script:</p>
+
+<pre><code>require &#39;java&#39;
+require &#39;vendor/lib/EWSJavaAPI_1.2.jar&#39;
+
+def microsoft
+  Java::Microsoft
+end
+
+version = microsoft.exchange.webservices.data.ExchangeVersion::Exchange2010_SP1
+service = microsoft.exchange.webservices.data.ExchangeService.new(version)</code></pre>
+
+<p>Getting the ExchangeVersion enum worked fine, but trying to access the ExchangeService class resulted in this error:</p>
+
+<blockquote>
+<pre><code>NameError: missing class or uppercase package name (`microsoft.exchange.webservices.data.ExchangeService&#39;)
+get_proxy_or_package_under_package at org/jruby/javasupport/JavaUtilities.java:54
+method_missing at file:/Users/adam/.rvm/rubies/jruby-1.7.3/lib/jruby.jar!/jruby/java/java_package_module_template.rb:14
+(root) at lib/sandbox.rb:11</code></pre>
+</blockquote>
+
+<p>I thought the problem was with the package name, but the error is actually that the EWS API is missing its dependencies. It needed commons-httpclient and commons-logging-api on the classpath. I discovered this via clojure&#8217;s error message for similar code:</p>
+
+<pre><code>(import &#39;(microsoft.exchange.webservices.data ExchangeService))</code></pre>
+
+<blockquote>
+<pre><code>ClassNotFoundException org.apache.commons.httpclient.HttpConnectionManager  java.net.URLClassLoader$1.run (URLClassLoader.java:366)</code></pre>
+</blockquote>
+
+<p>So the real issue here is JRuby&#8217;s error message. Interestingly enough, JRuby did give me a better error once commons-httpclient was on the classpath:</p>
+
+<blockquote>
+<pre><code>MultiThreadedHttpConnectionManager.java:70:in `&lt;clinit&gt;&#39;: java.lang.NoClassDefFoundError: org/apache/commons/logging/LogFactory</code></pre>
+</blockquote>
+
+<p>That told me commons-logging-api was also missing. JRuby should have told me that in the first place.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/jruby-nameerror-missing-class-or-uppercase-package-name.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2013-04-13T19:43Z" pubdate="true" itemprop="datePublished">
+              April 13, 2013, 2:43 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://raganwald.posterous.com/a-conjecture-about-code-reviews">
+                <span itemprop="name headline">Code Reviews</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><blockquote>
+<p>Imagine if we didn’t judge the author of the code by how few “WTFs” it generated, but instead by how fertile it was for discussion? Or, imagine if every programmer was being judged by what they learned from the discussion. How would that change things? better still, imagine if the “manager&#8217;s” job was to facilitate the learning and get the discussion back on track when it strayed into fixing-the-code territory instead of to judge people by how much they &#8220;contribute.&#8221; That would be a breath of fresh air to most teams.</p>
+</blockquote>
+
+<p>An excellent point. Code reviews are valuable for getting eyes on the code, but I agree with Raganwald here that the more valuable outcome is that everyone shares in the learning. I&#8217;ve thought of that as learning <em>about</em> the work that others are doing, but Raganwald makes a good point that you learn from the <em>discussion</em> about the work that others are doing.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/code-reviews.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2012-10-05T00:20Z" pubdate="true" itemprop="datePublished">
+              October 4, 2012 7:20pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="https://twitter.com/KentBeck/status/253532726714580992">
+                <span itemprop="name headline">Kent Beck on Pair Programming</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><blockquote>
+<p>pair programming works best with a large uncertain search space of problems and solutions. the closer to a solved problem, the less it helps</p>
+</blockquote>
+
+<p>- <a href='https://twitter.com/KentBeck'>Kent Beck</a> (<a href='https://twitter.com/KentBeck'>@KentBeck</a>)</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/kent-beck-on-pair-programming.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2012-10-04T01:29Z" pubdate="true" itemprop="datePublished">
+              October 3, 2012 8:29pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Implementing a Mutable Subclass in Objective-C</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I&#8217;m writing a class in <a href='http://adamstegman.com/projects/git-push.html'>Git Push</a> to hold and fetch git blobs from <a href='http://developer.github.com/v3/git/blobs/'>Github</a>.</p>
+
+<pre><code>@interface GHBlob : NSObject &lt;NSCopying, NSMutableCopying&gt;
+@property (nonatomic, copy, readonly) NSData *content;
+...
+@end
+
+@implementation GHBlob
+@synthesize content = _content;
+...
+@end</code></pre>
+
+<p>To support creating and updating blobs, I wrote a mutable subclass initialized in #mutableCopy from <a href='http://developer.apple.com/library/ios/#documentation/Cocoa/Reference/Foundation/Protocols/NSMutableCopying_Protocol/Reference/Reference.html#//apple_ref/occ/intf/NSMutableCopying'>NSMutableCopying</a>. This entailed redefining properties as <code>readwrite</code>:</p>
+
+<pre><code>@interface GHMutableBlob : GHBlob
+@property (nonatomic, copy, readwrite) NSData *content;
+...
+@end
+
+@implementation GHMutableBlob
+@synthesize content = _content;
+...
+@end</code></pre>
+
+<h3 id='problems'>Problems</h3>
+
+<h4 id='resynthesizing'>Resynthesizing</h4>
+
+<p>As shown above, I also re-synthesized the methods in the subclass. However, this resulted in the subclass&#8217;s initializer breaking.</p>
+
+<pre><code>GHBlob *newBlob = [blob mutableCopy];
+STAssertEquals(newBlob.content, blob.content, nil);
+  //=&gt; &#39;&lt;00000000&gt;&#39; should be equal to &#39;&lt;10cbb806&gt;&#39;</code></pre>
+
+<p>On review, I noticed something I&#8217;d missed before in <a href='http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocProperties.html'>Apple&#8217;s documentation on redeclaring properties</a>. The redeclared property isn&#8217;t synthesized in their example, it&#8217;s declared <code>@dynamic</code> and the setter is defined by hand. I scoffed at the inconvenience (isn&#8217;t this what synthesizing is supposed to avoid?), but did it anyway.</p>
+
+<h4 id='unreachable_instance_variables'>Unreachable instance variables</h4>
+
+<p>Next, the compiler complained that the <code>_content</code> instance variable was unreachable. Oh, <a href='http://stackoverflow.com/questions/5015130/do-properties-have-to-be-declared-as-instance-variables-in-objective-c#answer-5015657'>so <em>this</em> is why we define ivars in the interface</a> - it makes them available to subclasses.</p>
+
+<h3 id='summary'>Summary</h3>
+
+<p>So to implement <code>NSMutableCopying</code>, I had to explicitly declare my instance variables in the interface and explicitly define setter methods in my mutable subclass. I thought the property/synthesize syntax was <a href='http://mobile.dzone.com/news/open-letter-apple-please-kill'>saving me the trouble</a>, but apparently it&#8217;s not all rainbows and unicorns.</p>
+
+<pre><code>@interface GHBlob : NSObject &lt;NSCopying, NSMutableCopying&gt; {
+  NSData *_content;
+}
+@property (nonatomic, copy, readonly) NSData *content;
+...
+@end
+
+@implementation GHBlob
+@synthesize content = _content;
+@end</code></pre>
+
+<p>And in the mutable subclass:</p>
+
+<pre><code>@interface GHMutableBlob : GHBlob
+@property (nonatomic, copy, readwrite) NSData *content;
+...
+@end
+
+@implementation GHMutableBlob
+@dynamic content;
+- (void)setContent:(NSData *)content {
+  _content = [content copy];
+}</code></pre></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/implementing-a-mutable-subclass-in-objective-c.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2012-01-06T06:31Z" pubdate="true" itemprop="datePublished">
+              January 6, 2012 12:31am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Nil Weak Reference to an OCMock Mock Object</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>While I was working on unit tests for <a href='http://adamstegman.com/projects/git-push.html'>Git Push</a>, I wanted to mock my delegate so I could create an expectation. So I used <a href='http://ocmock.org/'>OCMock</a>:</p>
+
+<pre><code>id delegate = [OCMockObject mockForProtocol:@protocol(MyDelegateProtocol)];
+[[delegate expect] someMethod];
+myClassIvar.connectionDelegate = delegate;
+[myClassIvar someOtherMethod];
+STAssertNoThrow([delegate verify], @&quot;should have called someMethod on delegate&quot;);</code></pre>
+
+<p>But found the assertion failing. I stepped into #someOtherMethod and discovered the delegate was nil. So I added</p>
+
+<pre><code>STAssertNotNil(myClassIvar.connectionDelegate, @&quot;should have set delegate&quot;);</code></pre>
+
+<p>And watched that fail as well. Since Git Push is using <a href='http://developer.apple.com/technologies/ios5/'>ARC</a>, I <a href='http://clang.llvm.org/docs/AutomaticReferenceCounting.html#objects'>read up on retain semantics</a> to see if I was missing something about local references. But local references are strong, so the delegate should not have been deallocated yet.</p>
+
+<p>I <a href='http://stackoverflow.com/questions/8675054/why-is-my-objects-weak-delegate-property-nil-in-my-unit-tests'>posted about this issue on Stack Overflow</a> <sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup>, where Evan suggested that OCMock may be the issue. Sure enough, creating an explicit class conforming to my delegate protocol fixed the issue.</p>
+
+<pre><code>@interface MockDelegate : NSObject &lt;MyDelegateProtocol&gt;
+@property (nonatomic, strong) NSNumber *called;
+@end
+@implementation MockDelegate
+@synthesize called = _called;
+- (void)someMethod {
+  _called = [NSNumber numberWithBool:YES];
+}
+@end
+
+@implementation MyClassTests
+- (void)testSomeOtherMethod {
+  MockDelegate *delegate = [[MockDelegate alloc] init];
+  myClassIvar.connectionDelegate = delegate;
+  [myClassIvar someOtherMethod];
+  STAssertTrue([delegate.called boolValue], @&quot;should have called someMethod on delegate&quot;);
+}
+@end</code></pre>
+
+<p>I still don&#8217;t understand why it was being deallocated, but it was definitely related to OCMock. I&#8217;ve isolated the issue in <a href='https://github.com/adamstegman/ARCMock'>a Github repo</a> to make it obvious and repeatable.</p>
+
+<p>UPDATE: Erik Doernenberg of OCMock looked into the issue and answered the Stack Overflow question as well, and determined it&#8217;s actually an issue with NSProxy objects and ARC in the iOS runtime. It works fine on OS X.</p>
+<div class='footnotes'><hr /><ol><li id='fn:1'>
+<p>Note that my code is slightly different, as I was using a static helper function to create my mock. I confirmed that was not the issue.</p>
+<a href='#fnref:1' rev='footnote'>&#8617;</a></li></ol></div></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/nil-weak-reference-to-an-ocmock-mock-object.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2012-01-02T21:55Z" pubdate="true" itemprop="datePublished">
+              January 2, 2012 3:55pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="https://gist.github.com/1174851">
+                <span itemprop="name headline">fillion.rb</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>Yesterday Nathan Fillion <a href='http://twitter.com/NathanFillion/statuses/106853202909073409'>tweeted</a> about finding a permutation of his name on a website. At first I just chuckled, but it soon occurred to me that this would be a fun problem to solve with scripting.</p>
+
+<p>So I whipped up <a href='https://gist.github.com/1174851'>fillion.rb</a> to peruse a webpage for permutations of a given word. It was fun to figure out a quick algorithm to find permutations, and then fight scope creep (I ended up writing a crawler for an entire domain).</p>
+
+<p>The beauty of development is being able to look for a challenge anywhere.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/fillion-rb.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-08-27T01:48Z" pubdate="true" itemprop="datePublished">
+              August 26, 2011, 8:48 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">URL-Driven Development is README-Driven Development</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>While working on <a href='http://adamstegman.com/projects/web-queue.html'>Web Queue</a> today I went to document the URLs to help me figure out the interface. As I was about to start writing out the URLs, I realized I could make it a lot easier on myself by giving the document some structure. So I decided to roll it into the README, which also needed to be written.</p>
+
+<p>As I wrote up the README, everything became a bit clearer. Up to that point, I had been fussing over details, learning how to use OAuth and the Netflix API while poorly maintaining a few different classes. Writing the README allowed me to step back and conceive the system as a whole, which made the necessary code much more clear to me. That&#8217;s README-driven development.</p>
+
+<p>My projects often go like this. I&#8217;m almost always learning a new technology or library, so I can&#8217;t always start off with a good architecture. But starting with the interface can make things a lot clearer.</p>
+
+<p>Writing out the URLs for a project is pretty similar to writing the README. It has the same goal, figuring out the interface of a project, but focused on web applications instead of any other project. And as I&#8217;m learning from personal experience, that can be exactly what&#8217;s needed for a good project.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/url-driven-development-is-readme-driven-development.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-08-06T19:42Z" pubdate="true" itemprop="datePublished">
+              August 6, 2011, 2:42 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://adamstegman.com/">
+                <span itemprop="name headline">New Site</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><blockquote>
+<p>I am very excited by the Internet and how easy it is today to get a project started.</p>
+</blockquote>
+
+<p>Case in point, <a href='http://adamstegman.com/'>my new site</a>.</p>
+
+<p>I&#8217;m also hosting <a href='http://blog.adamstegman.com/'>my blog</a> there now.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/new-site.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-08-04T01:56Z" pubdate="true" itemprop="datePublished">
+              August 3, 2011, 8:56 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">TIL, Grails edition</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I’ve unfortunately been experiencing the magic of Grails lately.</p>
+
+<p>TIL:</p>
+
+<pre><code>new JSONObject([key: []]) == new JSONObject([key: []])</code></pre>
+
+<p>and</p>
+
+<pre><code>new JSONArray([]) == new JSONArray([])</code></pre>
+
+<p>but</p>
+
+<pre><code>new JSONObject([key: new JSONArray([])]) != new JSONObject([key: new JSONArray([])])</code></pre>
+
+<p>This is so much fun.</p>
+
+<p>Update: This is due to a non-implementation of <code>JSONArray.hashCode()</code>. JIRA logged here: <a href='http://jira.grails.org/browse/GRAILS-7770'>http://jira.grails.org/browse/GRAILS-7770</a></p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/til-grails-edition.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-07-21T17:38Z" pubdate="true" itemprop="datePublished">
+              July 21, 2011, 10:38 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Write a README</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>Reading code documentation to understand a system is like learning how to drive by inspecting the washer fluid dispenser, then a spark plug, then the brake pads. Write a README.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/write-a-readme.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-07-13T06:09Z" pubdate="true" itemprop="datePublished">
+              July 13, 2011, 11:09 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://blog.jitbit.com/2011/06/90-of-your-users-are-idiots.html">
+                <span itemprop="name headline">90% of your users are "idiots"</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><blockquote>
+<p>And, in good conscience, don’t you want to be an idiot when you’re on the other side of the screen? I do! I want to be an idiot! Please let me be an idiot. I want things to “just work”.</p>
+</blockquote>
+
+<p>Completely agree. It&#8217;s easy to lose sight of this.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/90-percent-of-your-users-are-idiots.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-06-29T17:56Z" pubdate="true" itemprop="datePublished">
+              June 29, 2011, 10:56 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Silence Test::Unit tests</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I&#8217;ve written several tests that have the unfortunate side effect of writing to stdout or stderr, polluting my pretty stream of dots.</p>
+
+<p>Thanks to a <a href='http://benevolentcode.com/2011/03/temporarily-redirect-stdout-in-ruby/'>post on Benevolent Code</a>, I decided to silence them.</p>
+<script src='https://gist.github.com/926853.js'> </script>
+<p>Update:</p>
+
+<p>The same thing in RSpec:</p>
+<script src='https://gist.github.com/926858.js'> </script></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/silence-test-unit-tests.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-04-19T04:20Z" pubdate="true" itemprop="datePublished">
+              April 18, 2011, 11:20 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Quoted-printable in Ruby</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I&#8217;m working on reading emails sent from ActionMailer, and was noticing the weird form of what I thought was URL-encoding in an HTML section of a multipart email, e.g.</p>
+
+<pre><code>&lt;html lang=3D&quot;en&quot;&gt;</code></pre>
+
+<p>I also noticed the line length and endings:</p>
+
+<blockquote>
+<p>blah blah &#8230; blah bl=<br />ah blah blah</p>
+</blockquote>
+
+<p>I shrugged these off as quirks of ActionMailer or SMTP and moved on to removing/decoding them.</p>
+
+<p>Two hours later, when googling for info about them because they didn&#8217;t seem consistent, I stumbled across <a href='http://en.wikipedia.org/wiki/Quoted-printable'>Quoted-printable encoding</a>. I recognized it from the headers in the email, and wondered if someone had written a gem or something to decode it. Then I find <a href='http://rubydoc.info/stdlib/core/1.8.7/String#unpack-instance_method'>this</a> - String#unpack was able to do it for me all along.</p>
+
+<p>It&#8217;s great that Ruby (and sometimes Rails) can do things like this out of the box. I just wish I was smart enough to look.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/quoted-printable-in-ruby.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-02-10T03:31Z" pubdate="true" itemprop="datePublished">
+              February 9, 2011, 9:31 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Test-Driven Drudgery</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I&#8217;ll admit it. I hate test-driven development while I&#8217;m actually doing it. It&#8217;s boring and tedious. I get lost in details while trying to get some test to work. Maybe I just need to do more <a href='http://thecleancoder.blogspot.com/2010/10/craftsman-62-dark-path.html'>katas</a>, but it gets old fast.</p>
+
+<p>Katas make it look so nice and easy. You just think of the right test, write it, and make it pass. But in practice I have a much bigger picture in mind that I want to implement, and I just can&#8217;t limit myself to building it one atom at a time, or I&#8217;ll lose it. Sometimes, I just want to hack.</p>
+
+<p>So I can sympathize when I see people writing a bunch of code to get some massive feature ready, and then filling in tests at the end. But it&#8217;s wrong. It seems harmless (&#8221;I&#8217;m still testing, right?&#8221;) because the difference can be subtle. Writing tests after the fact means you&#8217;re writing your tests to fit your code, instead of the other way around. You&#8217;re trying to achieve that code coverage metric instead of thinking hard about each feature, branch, and interface.</p>
+
+<p>Just like writing code without TDD, it can often work just fine. But it&#8217;s not scalable and it results in poorly-tested and/or poorly-written code.</p>
+
+<p>I&#8217;m not just preaching, I live this dilemma every day. TDD sucks, but man, does it ever improve the quality of my code.</p>
+
+<p>Sometimes I just hack. But most of the time, I drop in TODO&#8217;s where I need to remember a big picture and get to testing first.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/test-driven-drudgery.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2011-01-05T21:56Z" pubdate="true" itemprop="datePublished">
+              January 5, 2011, 3:56 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://about.me/adamstegman">
+                <span itemprop="name headline">About.me</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I made an about.me page. At the very least, it will be a central repository for where to find me. Hopefully I can get a better background eventually.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/about-me.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-12-03T07:30Z" pubdate="true" itemprop="datePublished">
+              December 3, 2010, 1:30 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">ActiveRecord Hangs On to Destroyed Relations</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>Rails&#8217; ActiveRecord has a nifty #destroy method that almost everyone already knows about. The documentation for #destroy <sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup> <sup id='fnref:2'><a href='#fn:2' rel='footnote'>2</a></sup> helpfully states</p>
+
+<blockquote>
+<p>Deletes the record in the database and freezes this instance to reflect that no changes should be made (since they can’t be persisted).</p>
+</blockquote>
+
+<p>What is less clear is how it works when you call it on a relationship. To be sure, it destroyed the database record. What it also unfortunately does it hangs on to the reference in the parent object.</p>
+
+<p>Let&#8217;s throw down with some sample code.</p>
+
+<pre><code>class Thing &lt; ActiveRecord::Base
+  has_one :child
+end
+
+class Child &lt; ActiveRecord::Base
+  belongs_to :thing
+end
+
+zengarden&gt; thing = Thing.new
+th=&gt; #&lt;Thing id: nil, name: nil, created_at: nil, updated_at: nil&gt;
+zengarden&gt; thing.save
+=&gt; true
+zengarden&gt; thing.create_child :name =&gt; &quot;Child&quot;
+=&gt; #&lt;Child id: 4, name: &quot;Child&quot;, thing_id: 1,...&gt;
+zengarden&gt; thing.child
+=&gt; #&lt;Child id: 4, name: &quot;Child&quot;, thing_id: 1...&gt;
+zengarden&gt; thing.child.destroy
+=&gt; #&lt;Child id: 4, name: &quot;Child&quot;, thing_id: 1...&gt;
+zengarden&gt; thing.child
+=&gt; #&lt;Child id: 4, name: &quot;Child&quot;, thing_id: 1...&gt;</code></pre>
+
+<p>Arg. I just destroyed it! I don&#8217;t want it hanging around in my cache. If I really wanted to save it, I should have saved it before or during the destroy call. I can of course invalidate my cache by calling</p>
+
+<pre><code>thing.child(true)</code></pre>
+
+<p>which correctly returns nil. But if I don&#8217;t know to do that immediately after the destroy, I get errors like</p>
+
+<blockquote>
+<p>TypeError: can&#8217;t modify frozen hash</p>
+</blockquote>
+
+<p>because code used later naïvely calls</p>
+
+<pre><code>if thing.child
+  thing.child.attributes = new_attributes
+end</code></pre>
+
+<p>expecting that if a child exists, it should be updated.</p>
+
+<p>For the sake of argument, let&#8217;s say that maybe the behavior isn&#8217;t so bad, maybe this is what people expect or could use. In that case, what a terrible error message. I&#8217;m not familiar enough with the Associations internals to suggest where a better one could be injected, but something along the lines of</p>
+
+<blockquote>
+<p>Can&#8217;t modify a destroyed record</p>
+</blockquote>
+
+<p>would be miles better.</p>
+<div class='footnotes'><hr /><ol><li id='fn:1'>
+<p>Rails 3 - <a href='http://railsapi.com/doc/rails-v3.0.0/classes/ActiveRecord/Persistence.html#M001019'>http://railsapi.com/doc/rails-v3.0.0/classes/ActiveRecord/Persistence.html#M001019</a></p>
+<a href='#fnref:1' rev='footnote'>&#8617;</a></li><li id='fn:2'>
+<p>Rails 2.3.8 - <a href='http://railsapi.com/doc/rails-v2.3.8/classes/ActiveRecord/Base.html#M001111'>http://railsapi.com/doc/rails-v2.3.8/classes/ActiveRecord/Base.html#M001111</a></p>
+<a href='#fnref:2' rev='footnote'>&#8617;</a></li></ol></div></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/activerecord-hangs-on-to-destroyed-relations.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-10-25T18:31Z" pubdate="true" itemprop="datePublished">
+              October 25, 2010, 1:31 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="https://chrome.google.com/extensions/detail/mffbgadohiiggcibdgmogfdlmackfbhm">
+                <span itemprop="name headline">Read Link Later Works With New Twitter</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>Version 1.1.0 of Read Link Later now works with New Twitter. Rejoice!</p>
+
+<p>Sorry for the delay. New Twitter came to me at a bad time, where I didn&#8217;t have the time to devote to updating Read Link Later. Fortunately, we&#8217;re in business now!</p>
+
+<p>The only issue is that the New Twitter uses their own API through JavaScript, so I don&#8217;t have a way of knowing when a tweet is loaded. To work around this, I look for new tweets to add the Read Later links to every 100 ms. If I could hack in a custom event, that would be something.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/read-link-later-works-with-new-twitter.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-10-20T12:27Z" pubdate="true" itemprop="datePublished">
+              October 20, 2010, 7:27 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Complex Associations with factory_girl</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p><a href='http://github.com/thoughtbot/factory_girl'>factory_girl</a> is great for DRYing up test code and making tests isolated and maintainable. What it&#8217;s not so great at is any <a href='http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html'>association</a> more complicated than has_one/belongs_to. I found <a href='http://stackoverflow.com/questions/2937326/populating-an-association-with-children-in-factory-girl'>a nice trick on Stack Overflow</a> for has_many associations.</p>
+
+<blockquote>
+<p>The Factory.after_ hooks appear to be the only way to do this successfully.</p>
+</blockquote>
+
+<p>It&#8217;s a shame, because it makes it really painful to use factories. What used to be a one-line call to create whatever you need becomes writing your own factories that call factory_girl factories.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/complex-associations-with-factory-girl.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-08-18T19:00Z" pubdate="true" itemprop="datePublished">
+              August 18, 2010, 2:00 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="https://chrome.google.com/extensions/detail/mffbgadohiiggcibdgmogfdlmackfbhm">
+                <span itemprop="name headline">Read Link Later</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I&#8217;m excited to publish my first Google Chrome extension, Read Link Later. From the detail page:</p>
+
+<blockquote>
+<p>Read Link Later adds an Instapaper &#8220;Read Later&#8221; link to each tweet in a Twitter.com feed. The link retrieves each external URL in the tweet and adds it to your Instapaper queue for reading later.</p>
+</blockquote>
+
+<p>Unfortunately I can&#8217;t add these links to clients, that would be even more helpful.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/read-link-later.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-08-16T04:35Z" pubdate="true" itemprop="datePublished">
+              August 15, 2010, 11:35 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Happiness</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p><a href='http://iwasamonkey.tumblr.com/post/915222642/happiness'>iwasamonkey</a>:</p>
+
+<blockquote>
+<p><img alt='Happiness' src='/images/happiness.jpg' /></p>
+
+<p>Happiness</p>
+</blockquote></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/happiness.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-08-07T03:17Z" pubdate="true" itemprop="datePublished">
+              August 6, 2010, 10:17 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://www.gobolinux.org/">
+                <span itemprop="name headline">GoboLinux</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p><a href='http://onethingwell.org/post/898477013/gobolinux'>onethingwell</a>:</p>
+
+<blockquote>
+<blockquote>
+<p>GoboLinux is a modular Linux distribution: it organizes the programs in your system in a new, logical way. Instead of having parts of a program thrown at <code>/usr/bin</code>, other parts at <code>/etc</code> and yet more parts thrown at</p>
+
+<pre><code>/usr/share/something/or/another</code></pre>
+
+<p><em>each program gets its own directory tree</em>, keeping them all neatly separated and allowing you to see everything that’s installed in the system and which files belong to which programs in a simple and obvious way.</p>
+</blockquote>
+
+<p>Off-topic, I know, but this strikes me as an eminently sensible approach.</p>
+</blockquote>
+
+<p>Sounds like what OS X does with applications. Very sensible.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/gobolinux.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-08-03T15:19Z" pubdate="true" itemprop="datePublished">
+              August 3, 2010, 10:19 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Grid Layout As Bad As Table Layout?</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>The more I think about this, the more this statement bothers me. <a href='http://twitter.com/tavon'>@tavon</a> said that grid layouts like <a href='http://960.gs/'>960 grid</a> are as bad as table layouts. His reasoning was that the classes are purely presentational; it&#8217;s presentation affecting markup the same way tables used to.</p>
+
+<p>But that&#8217;s just misuse of the layouts. You shouldn&#8217;t pull something massive and generic like a grid layout and not modify it to suit your website. Wouldn&#8217;t you modify your reset stylesheet to match the styles your website uses? Use your existing class names instead of the presentational grid class names, and remove the classes you don&#8217;t need. These third party tools are not holy relics - change them to what you need!</p>
+
+<p>That doesn&#8217;t mean they can&#8217;t or don&#8217;t affect markup inappropriately. I haven&#8217;t used a grid layout, so I&#8217;m not familiar with what&#8217;s required. But the generated styles aren&#8217;t inherently bad, they just need to be adapted.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/grid-layout-as-bad-as-table-layout.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-07-17T05:06Z" pubdate="true" itemprop="datePublished">
+              July 17, 2010, 12:06 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Don't Override System Shortcuts</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>I&#8217;ve had to uninstall <a href='http://code.leadmediapartners.com/'>RubyAMP</a>, a TextMate bundle that I use several times a day, because it overrode Ctrl+B and refused to let me change it.</p>
+
+<p>I realize most people don&#8217;t use these shortcuts, so I&#8217;ll explain it. Ctrl+B moves the cursor back one character, the equivalent of the left arrow key without having to move your hands. My workflow uses Ctrl+B so constantly that I couldn&#8217;t live with RubyAMP anymore, even though I enjoy its functionality.</p>
+
+<p>The reason this is so negative is the fact that Ctrl+B is not a shortcut that I added; it&#8217;s part of OS X. If you are creating keyboard shortcuts for your program or extension, you can&#8217;t possibly avoid stepping on every other program&#8217;s toes. But the least you can do is avoid stepping on the operating system&#8217;s toes. Otherwise it&#8217;s just negligent, user-hostile design.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/dont-override-system-shortcuts.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-06-29T14:31Z" pubdate="true" itemprop="datePublished">
+              June 29, 2010, 9:31 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Thanks, Captain Obvious</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><blockquote>
+<p>This viral ad for <em>Civilization V</em> about people trying to kick their <em>Civ</em> habit will probably just make you want to pick the game up again.</p>
+</blockquote>
+
+<p>Wow, it&#8217;s almost like that&#8217;s what they intended.</p>
+
+<p><a href='http://www.escapistmagazine.com/news/view/101565-Civ-Anonymous-Where-You-Go-to-Stop-Taking-Another-Turn'>Source</a></p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/thanks-captain-obvious.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-06-22T20:43Z" pubdate="true" itemprop="datePublished">
+              June 22, 2010, 3:43 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://thenerdary.net/articles/entry/onclick-is-your-friend">
+                <span itemprop="name headline">onclick is Your Friend</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>Mark asserts that while using onclick is frowned upon, it&#8217;s faster and cleaner:</p>
+
+<blockquote>
+<p>Sure it makes your XHTML a bit longer, but that’s one less selector jQuery has to parse and one less DOMReady function your browser has to kick off.</p>
+</blockquote>
+
+<p>That&#8217;s <em>true</em>, but it comes at the cost of maintainability. Putting the jQuery example he provided into an external file makes it easier to maintain by having all the JavaScript in predictable and findable places.</p>
+
+<p>Additionally, that performance hit can be mitigated by using progressive enhancement to give the entire page functionality immediately, then asynchronously loading the JavaScript to enhance it. Asynchronously loading your JS may or may not even be necessary, depending on your JS payload.</p>
+
+<p>Using inline code like this isn&#8217;t necessary for most people; they just make your code harder to read.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/onclick-is-your-friend.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-06-21T23:00Z" pubdate="true" itemprop="datePublished">
+              June 21, 2010, 6:00 pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://garann.wordpress.com/2010/06/19/defending-terrible-things/">
+                <span itemprop="name headline">Defending Terrible Things</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><blockquote>
+<p>You know what would annoy the shit out of me if I were using a screen reader to read a bibliography on the internet? Listening to a goofy-sounding computer voice try to emphasize every single word of <em>Journal of the Study of Obscure and Mostly-in-Latin Canine Diseases Affecting Generally the Respiratory System but Also Sometimes the Lymph Nodes</em> or something. I don’t know that this is still a problem, but the idea is ridiculous in and of itself. Italic does not always mean emphasis, nor does bold always mean MAKE THIS LOUD.</p>
+</blockquote>
+
+<p>Hey, you know, that&#8217;s true. That&#8217;s what &#60;b&#62; and &#60;i&#62; should be used for. Here&#8217;s what they <em>shouldn&#8217;t</em> be used for, from the same article:</p>
+
+<blockquote>
+<p>The bold and italic tags are short. The emphasis tag isn’t bad, but the strong tag is way too long to be a good value per keystroke.</p>
+</blockquote>
+
+<p>Yeah, semantic HTML uses tags that are longer than one character. &#60;strong&#62; is five whole more letters than &#60;b&#62;! Sounds like someone who throws around a lot of &#8220;u&#8221;instead of &#8220;you&#8221;, and &#8220;y&#8221; instead of &#8220;why&#8221; in textual conversations. Not someone I&#8217;d want to take design advice from.</p>
+
+<blockquote>
+<p>I add</p>
+
+<pre><code>&lt;b&gt;</code></pre>
+
+<p>and</p>
+
+<pre><code>&lt;i&gt;</code></pre>
+
+<p>to things I don’t necessarily want bolded or italicized. I do it because they’re some of the shortest elements available and they provide a hook to style child elements in larger repeated widgets with very precise, complex layouts. If I have to wrap every word of text in a tag just to accomplish some goofy layout, I’m using the smallest thing available.</p>
+</blockquote>
+
+<p>That sounds like a pretty poor layout.</p>
+
+<p>Bottom line is, &#60;b&#62; and &#60;i&#62; have their place, but it&#8217;s not showing emphasis, nor is it saving keystrokes or because this layout is kinda complicated and I want some easy hooks.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/defending-terrible-things.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-06-20T05:14Z" pubdate="true" itemprop="datePublished">
+              June 20, 2010, 12:14 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://powazek.com/posts/1063">
+                <span itemprop="name headline">Comments are hard work.</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>And no one wants to put in that much work.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/comments-are-hard-work.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-06-17T15:13Z" pubdate="true" itemprop="datePublished">
+              June 17, 2010, 10:13 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+    <li>
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2>
+              <a href="http://blogs.hbr.org/bregman/2010/06/why-i-returned-my-ipad.html">
+                <span itemprop="name headline">This is why we can't have nice things.</span>
+              </a>
+            </h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody"><p>The top-voted comments here are a great example of why people are agreeing with <a href='http://daringfireball.net/2010/06/whats_fair'>John Gruber&#8217;s assessment of comments</a>.</p>
+
+<blockquote>
+<p>What makes DF an efficient and effective soapbox is exactly that it is <em>not</em> noisy. My goal is for not a single wasted word to appear anywhere on any page of the site.</p>
+</blockquote>
+
+<p>Those comments distract from the article with fiery, irrelevant rants that show the authors didn&#8217;t even RTFA. The whole point of the article is lost if you start reading them.</p></div>
+        <footer>
+          <p class="permalink">
+            <a itemprop="url" href="/this-is-why-we-cant-have-nice-things.html">Permalink</a>
+          </p>
+          <div class="published">
+            Published at
+            <time datetime="2010-06-17T15:08Z" pubdate="true" itemprop="datePublished">
+              June 17, 2010, 10:08 am
+            </time>
+          </div>
+        </footer>
+      </article>
+    </li>
+  
+</ol>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <section class="author">
+        <h2>
+          Written by
+          <a rel="author" href="http://adamstegman.com/">Adam Stegman</a>
+        </h2>
+        <ul class="contact">
+          <li>
+            <a href="http://twitter.com/adamstegman">Follow me on Twitter</a>
+          </li>
+          <li>
+            <a href="http://github.com/adamstegman">Follow me on Github</a>
+          </li>
+          <li>
+            <a href="http://profiles.google.com/adam.stegman">Google Profile</a>
+          </li>
+          <li>
+            <a href="mailto:me@adamstegman.com">Email me</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </footer>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24951237-1']);
+    _gaq.push(['_setDomainName', '.adamstegman.com']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
 </html>
