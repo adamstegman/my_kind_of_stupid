@@ -162,13 +162,14 @@ def commit!
   # Add all output and commit it
   puts "Adding and committing compiled output for deployment.."
   ADDITIONAL_FILES.each do |file|
-    puts %x[git add #{file}]
+    puts %x[git checkout #{NANOC_BRANCH} #{file}]
+    puts %x[git add -f #{file}]
   end
   Dir['output/*'].each do |output_file|
     destination = output_file.sub(/\Aoutput\//, '')
     puts %x[rm -rf "#{destination}"]
     puts %x[mv "#{output_file}" "#{destination}"]
-    puts %x[git add "#{destination}"]
+    puts %x[git add -f "#{destination}"]
   end
   puts %x[git commit -m "#{ENV['commit'].gsub('"', '\"')}"]
 end
