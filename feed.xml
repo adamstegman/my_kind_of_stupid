@@ -2,13 +2,54 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>http://blog.adamstegman.com/</id>
   <title>My Kind of Stupid</title>
-  <updated>2013-12-02T01:19:00Z</updated>
+  <updated>2014-08-23T23:39:00Z</updated>
   <link rel="alternate" href="http://blog.adamstegman.com/"/>
   <link rel="self" href="http://blog.adamstegman.com/feed.xml"/>
   <author>
     <name>Adam Stegman</name>
     <uri>http://adamstegman.com/</uri>
   </author>
+  <entry>
+    <id>tag:blog.adamstegman.com,2014-08-23:/rendering-array-properties-in-ember-js.html</id>
+    <title type="html">Rendering array properties in Ember.js</title>
+    <published>2014-08-23T23:39:00Z</published>
+    <updated>2014-08-23T23:39:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/rendering-array-properties-in-ember-js.html"/>
+    <content type="html">&lt;p&gt;While working on photo uploads in my &lt;a href='https://github.com/adamstegman/photo_albums'&gt;latest project&lt;/a&gt;, I needed a network activity indicator to reflect background network usage. That way, users could navigate away from the upload form and see that uploads were still going in the background. Since I&amp;#8217;m using &lt;a href='http://emberjs.com/'&gt;Ember.js&lt;/a&gt; I created a component to display the indicator. I created an array in my &lt;code&gt;ApplicationController&lt;/code&gt; to track each upload. For each element in the array, I rendered a network activity indicator.&lt;/p&gt;
+
+&lt;p&gt;The concept was pretty straightforward and in a simple case worked fine. But when I removed an indicator after an upload was done, I got a strange error:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;TypeError: Cannot read property &amp;#39;destroy&amp;#39; of undefined
+    at Ember.CollectionView.Ember.ContainerView.extend.arrayWillChange (http://localhost:8888/assets/ember.js?body=true:23233:16)
+    at null._contentWillChange (http://localhost:8888/assets/ember.js?body=true:23140:10)
+    at sendEvent (http://localhost:8888/assets/ember.js?body=true:2302:14)
+    at notifyBeforeObservers (http://localhost:8888/assets/ember.js?body=true:2671:5)
+    at Object.propertyWillChange (http://localhost:8888/assets/ember.js?body=true:2497:3)
+    at set (http://localhost:8888/assets/ember.js?body=true:2763:15)
+    at Object.Ember.trySet (http://localhost:8888/assets/ember.js?body=true:2832:10)
+    at Object.Binding._sync (http://localhost:8888/assets/ember.js?body=true:6765:15)
+    at Object.DeferredActionQueues.flush (http://localhost:8888/assets/ember.js?body=true:5565:24)
+    at Object.Backburner.end (http://localhost:8888/assets/ember.js?body=true:5656:27)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The stacktrace indicated the problem is when I &lt;code&gt;set&lt;/code&gt; the new array of uploads. From the description of &lt;a href='http://emberjs.com/api/classes/Ember.CollectionView.html'&gt;&lt;code&gt;Ember.CollectionView&lt;/code&gt;&lt;/a&gt; it looked like the problem is with updating the rendered template from the array:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;Ember.CollectionView&lt;/code&gt; is an &lt;code&gt;Ember.View&lt;/code&gt; descendent responsible for managing a collection (an array or array-like object) by maintaining a child view object and associated DOM representation for each item in the array and ensuring that child views and their associated rendered HTML are updated when items in the array are added, removed, or replaced.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Stack Overflow had &lt;a href='http://stackoverflow.com/a/16661864'&gt;an answer&lt;/a&gt; that explained that the problem was with updating the property bindings:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;push&lt;/code&gt; doesn&amp;#8217;t tell the binding to update, but &lt;code&gt;pushObject&lt;/code&gt; does&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Since I was using a native JavaScript array, I was using native methods to add and remove uploads. I needed to use an &lt;code&gt;Ember.NativeArray&lt;/code&gt; instead so that I could use it in my template. This is possible using &lt;code&gt;Ember.A&lt;/code&gt; to wrap an array-like object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;this.set(&amp;#39;uploadActivityIndicators&amp;#39;, Ember.A([id]));
+this.get(&amp;#39;uploadActivityIndicators&amp;#39;).removeObject(id);&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From what I&amp;#8217;ve read, this is typical of Ember—use Ember&amp;#8217;s replacements for native JavaScript concepts to avoid any surprises like this. This is one reason why some people prefer Angular or React. I don&amp;#8217;t think this is enough of a reason to write off a framework, it&amp;#8217;s just a guideline of using Ember. It makes it more complicated to learn but doesn&amp;#8217;t make it automatically bad. Still, I need to learn more about Angular and React so I can better compare the options.&lt;/p&gt;</content>
+  </entry>
   <entry>
     <id>tag:blog.adamstegman.com,2013-12-02:/nstokenfield-failed-to-query-display-string-for-a-represented-object.html</id>
     <title type="html">NSTokenField failed to query display string for a represented object</title>
