@@ -2,13 +2,32 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>http://blog.adamstegman.com/</id>
   <title>My Kind of Stupid</title>
-  <updated>2014-08-23T23:39:00Z</updated>
+  <updated>2015-04-21T04:29:00Z</updated>
   <link rel="alternate" href="http://blog.adamstegman.com/"/>
   <link rel="self" href="http://blog.adamstegman.com/feed.xml"/>
   <author>
     <name>Adam Stegman</name>
     <uri>http://adamstegman.com/</uri>
   </author>
+  <entry>
+    <id>tag:blog.adamstegman.com,2015-04-21:/launchd-gem-servers-on-os-x.html</id>
+    <title type="html">Launchd Gem Servers on OS X</title>
+    <published>2015-04-21T04:29:00Z</published>
+    <updated>2015-04-21T04:29:00Z</updated>
+    <link rel="alternate" href="http://blog.adamstegman.com/launchd-gem-servers-on-os-x.html"/>
+    <content type="html">&lt;p&gt;Usually when I need documentation for a RubyGem I&amp;#8217;m working with, I go to &lt;a href='http://www.rubydoc.info/gems'&gt;RubyDoc.info&lt;/a&gt;. Today, however, it was not responding. After catching up on Twitter it occurred to me that I could read the documentation locally since I already had the gem installed.&lt;/p&gt;
+
+&lt;p&gt;Running &lt;code&gt;gem rdoc prawn&lt;/code&gt;&lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt; generates documentation for the prawn gem. Then &lt;code&gt;gem server&lt;/code&gt; will start a server on &lt;code&gt;localhost:8808&lt;/code&gt; hosting the generated RDoc.&lt;/p&gt;
+
+&lt;p&gt;This worked fine, but it occurred to me that starting and stopping the gem server whenever I want to see the documentation is annoying. OS X has the concept of &lt;a href='https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html'&gt;launch agents&lt;/a&gt; which can be kept alive by the operating system whenever you are logged in. I thought I would make a launch agent to run a gem server so that I could open it whenever I wanted.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, running &lt;code&gt;gem server&lt;/code&gt; in a default shell uses the version of Ruby that ships with OS X. I have gems installed in different versions of Ruby using &lt;a href='https://github.com/postmodern/chruby'&gt;chruby&lt;/a&gt;, and I might want to see any of them depending on what project I&amp;#8217;m working on. So I decided to run a server for each version of Ruby I have installed (&lt;em&gt;except&lt;/em&gt; the system Ruby). Each server runs on a different port chosen based on the Ruby version it supports. Ruby 2.0.0 is available at &lt;code&gt;localhost:8200&lt;/code&gt;, 2.1.4 is available at &lt;code&gt;localhost:8214&lt;/code&gt;, and 2.2.1 is at &lt;code&gt;localhost:8221&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I wrote a script and an accompanying launch agent plist to run it and &lt;a href='https://gist.github.com/adamstegman/76d9cb40a8a3d92ea0e6'&gt;posted them in a gist&lt;/a&gt;.&lt;/p&gt;
+&lt;div class='footnotes'&gt;&lt;hr /&gt;&lt;ol&gt;&lt;li id='fn:1'&gt;
+&lt;p&gt;There was one catch to generating the documentation. I keep my &lt;code&gt;~/.gemrc&lt;/code&gt; with &lt;code&gt;gem: --no-ri --no-rdoc&lt;/code&gt; so that bundle installs go quickly, but in this case it was causing the &lt;code&gt;gem rdoc&lt;/code&gt; command to fail. I had to remove that option to successfully generate the documentation.&lt;/p&gt;
+&lt;a href='#fnref:1' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</content>
+  </entry>
   <entry>
     <id>tag:blog.adamstegman.com,2014-08-23:/rendering-array-properties-in-ember-js.html</id>
     <title type="html">Rendering array properties in Ember.js</title>

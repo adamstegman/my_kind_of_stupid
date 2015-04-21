@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Content-Language" content="en-us"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="keywords" content=""/>
+  <meta name="description" content=""/>
+  <title>Launchd Gem Servers on OS X - My Kind of Stupid</title>
+  <link type="application/atom+xml" href="/feed.xml" rel="alternate" title="Articles"/>
+  <link type="image/vnd.microsoft.icon" href="/favicon.ico" rel="icon"/>
+  <link type="text/css" href="/stylesheets/application.css" rel="stylesheet"/>
+  
+</head>
+<body>
+  <header>
+    <div class="container">
+      <hgroup>
+        <h1><a href="/" class="title">My Kind of Stupid</a></h1>
+        <h2>Web development, user interfaces, and other development topics.</h2>
+      </hgroup>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="/">Articles</a></li>
+          <li><a href="http://adamstegman.com/">Adam Stegman</a></li>
+          <li><a rel="me" href="http://twitter.com/adamstegman">Twitter</a></li>
+          <li><a rel="me" href="http://github.com/adamstegman">Github</a></li>
+      </nav>
+    </div>
+  </header>
+  <div class="content">
+    <div class="container">
+      <article itemscope="true" itemtype="http://www.schema.org/BlogPosting">
+        <header>
+          <hgroup>
+            
+            <h2 itemprop="name">Launchd Gem Servers on OS X</h2>
+            
+            
+          </hgroup>
+        </header>
+        <div class="article-body" itemprop="articleBody">
+          <p>Usually when I need documentation for a RubyGem I&#8217;m working with, I go to <a href='http://www.rubydoc.info/gems'>RubyDoc.info</a>. Today, however, it was not responding. After catching up on Twitter it occurred to me that I could read the documentation locally since I already had the gem installed.</p>
+
+<p>Running <code>gem rdoc prawn</code><sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup> generates documentation for the prawn gem. Then <code>gem server</code> will start a server on <code>localhost:8808</code> hosting the generated RDoc.</p>
+
+<p>This worked fine, but it occurred to me that starting and stopping the gem server whenever I want to see the documentation is annoying. OS X has the concept of <a href='https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html'>launch agents</a> which can be kept alive by the operating system whenever you are logged in. I thought I would make a launch agent to run a gem server so that I could open it whenever I wanted.</p>
+
+<p>Unfortunately, running <code>gem server</code> in a default shell uses the version of Ruby that ships with OS X. I have gems installed in different versions of Ruby using <a href='https://github.com/postmodern/chruby'>chruby</a>, and I might want to see any of them depending on what project I&#8217;m working on. So I decided to run a server for each version of Ruby I have installed (<em>except</em> the system Ruby). Each server runs on a different port chosen based on the Ruby version it supports. Ruby 2.0.0 is available at <code>localhost:8200</code>, 2.1.4 is available at <code>localhost:8214</code>, and 2.2.1 is at <code>localhost:8221</code>.</p>
+
+<p>I wrote a script and an accompanying launch agent plist to run it and <a href='https://gist.github.com/adamstegman/76d9cb40a8a3d92ea0e6'>posted them in a gist</a>.</p>
+<div class='footnotes'><hr /><ol><li id='fn:1'>
+<p>There was one catch to generating the documentation. I keep my <code>~/.gemrc</code> with <code>gem: --no-ri --no-rdoc</code> so that bundle installs go quickly, but in this case it was causing the <code>gem rdoc</code> command to fail. I had to remove that option to successfully generate the documentation.</p>
+<a href='#fnref:1' rev='footnote'>&#8617;</a></li></ol></div>
+        </div>
+        <footer>
+          <div class="published">
+            Published at
+            <time datetime="2015-04-21T04:29Z" pubdate="true" itemprop="datePublished">
+              April 20, 2015 9:29pm
+            </time>
+          </div>
+        </footer>
+      </article>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <section class="author">
+        <h2>
+          Written by
+          <a rel="author" href="http://adamstegman.com/">Adam Stegman</a>
+        </h2>
+        <ul class="contact">
+          <li>
+            <a href="http://twitter.com/adamstegman">Follow me on Twitter</a>
+          </li>
+          <li>
+            <a href="http://github.com/adamstegman">Follow me on Github</a>
+          </li>
+          <li>
+            <a href="http://profiles.google.com/adam.stegman">Google Profile</a>
+          </li>
+          <li>
+            <a href="mailto:me@adamstegman.com">Email me</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </footer>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24951237-1']);
+    _gaq.push(['_setDomainName', '.adamstegman.com']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
+</html>
