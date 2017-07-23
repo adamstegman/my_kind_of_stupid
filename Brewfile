@@ -1,2 +1,0 @@
-install jpegoptim
-install optipng

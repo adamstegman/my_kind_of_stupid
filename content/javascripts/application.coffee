@@ -1,2 +1,0 @@
-this.hello ->
-  alert 'hi!'

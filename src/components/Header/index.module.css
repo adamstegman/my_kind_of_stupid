@@ -1,0 +1,47 @@
+.header {
+  composes: splash from '../../layouts/index.module.css';
+  overflow: hidden;
+  position: relative;
+}
+
+.logo {
+  fill: rgba(0, 0, 0, .1);
+  height: 340px;
+  width: 340px;
+  position: absolute;
+  right: -56px;
+  top: -56px;
+  z-index: 1;
+}
+
+.h1 {
+  composes: splash-text from '../../layouts/index.module.css';
+  margin-top: 0;
+  font-size: 3rem;
+}
+.h2 {
+  composes: splash-text from '../../layouts/index.module.css';
+  margin-top: 1rem;
+}
+.header-link {
+  composes: splash-text from '../../layouts/index.module.css';
+  background-image: none;
+  text-shadow: none;
+}
+
+.nav-list {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-item {
+  margin: 0 1rem;
+}
+.nav-item:first-child {
+  margin-left: 0;
+}
+.nav-link {
+  composes: splash-link from '../../layouts/index.module.css';
+  text-shadow: none;
+}
