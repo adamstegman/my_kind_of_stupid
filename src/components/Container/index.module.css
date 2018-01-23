@@ -1,0 +1,4 @@
+.container {
+  composes: container from '../../layouts/index.module.css';
+  padding-top: 0;
+}

@@ -1,0 +1,18 @@
+.header {
+  background: rebeccapurple;
+  margin-bottom: 1.45rem;
+}
+
+.container {
+  composes: container from '../../layouts/index.module.css';
+}
+
+.h1 {
+  margin: 0;
+}
+
+.link {
+  background-image: none;
+  color: white;
+  text-shadow: none;
+}
