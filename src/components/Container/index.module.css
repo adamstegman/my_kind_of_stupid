@@ -1,4 +1,7 @@
 .container {
-  composes: container from '../../layouts/index.module.css';
-  padding-top: 0;
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 1.45rem 1.0875rem;
+  position: relative;
+  z-index: 2;
 }

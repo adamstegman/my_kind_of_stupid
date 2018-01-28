@@ -1,23 +1,22 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Helmet from 'react-helmet'
+import React from 'react';
+import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
 
-import Header from '../components/Header'
-import Container from '../components/Container'
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const TemplateWrapper = ({ children }) => (
   <div>
     <Helmet
-      title="Gatsby Default Starter"
+      title="Adam Stegman"
       meta={[
-        { name: 'description', content: 'Sample' },
-        { name: 'keywords', content: 'sample, something' },
+        { name: 'description', content: '' },
+        { name: 'keywords', content: '' },
       ]}
     />
     <Header />
-    <Container>
-      {children()}
-    </Container>
+    {children()}
+    <Footer />
   </div>
 )
 

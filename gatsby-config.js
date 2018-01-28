@@ -10,5 +10,11 @@ module.exports = {
         pathToConfigModule: 'src/utils/typography.js',
       },
     },
+    {
+      resolve: 'gatsby-plugin-svgr',
+      options: {
+        dir: './src/assets',
+      },
+    },
   ],
 };

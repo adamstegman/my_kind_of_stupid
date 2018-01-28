@@ -1,0 +1,24 @@
+.footer {
+  composes: header from '../Header/index.module.css';
+}
+
+.logo {
+  composes: logo from '../Header/index.module.css';
+}
+
+.h2 {
+  composes: splash-text from '../../layouts/index.module.css';
+  margin-top: 0;
+}
+
+.nav-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-item {
+  margin: 0;
+}
+.nav-link {
+  composes: nav-link from '../Header/index.module.css';
+}

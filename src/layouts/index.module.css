@@ -1,5 +1,20 @@
-.container {
-  margin: 0 auto;
-  max-width: 960px;
-  padding: 1.45rem 1.0875rem;
+:root {
+  --splash-background-color: #0288D1; /* rgb(2, 136, 209) */
+  --splash-color: #eee;
+  --link-color: #134896;
+}
+
+.splash {
+  background: var(--splash-background-color);
+}
+.splash-text {
+  color: var(--splash-color);
+}
+.splash-link {
+  composes: splash-text;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 1px, var(--splash-color) 1px, var(--splash-color) 2px, rgba(0, 0, 0, 0) 2px);
+}
+.body-link {
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 1px, var(--link-color) 1px, var(--link-color) 2px, rgba(0, 0, 0, 0) 2px);
+  color: var(--link-color);
 }
