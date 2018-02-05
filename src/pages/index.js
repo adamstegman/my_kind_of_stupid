@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'gatsby-link';
 
 import Container from '../components/Container';
 import Post from '../components/Post';
@@ -13,6 +14,7 @@ const IndexPage = ({ data }) => {
         {posts.map((post, index) => (
           <li key={index} className={styles['article-item']}>
             <Post post={post} />
+            <Link className={styles.permalink} to={post.fields.post.slug}>Permalink</Link>
           </li>
         ))}
       </ol>

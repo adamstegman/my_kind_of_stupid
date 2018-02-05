@@ -11,3 +11,7 @@
 .article-item:last-child {
   border-bottom: none;
 }
+
+.permalink {
+  font-size: 0.79rem;
+}
