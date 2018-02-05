@@ -1,13 +1,5 @@
-# gatsby-starter-default
-The default Gatsby starter
+# My Kind of Stupid
 
-For an overview of the project structure please refer to the [Gatsby documentation - Building with Components](https://www.gatsbyjs.org/docs/building-with-components/)
+My blog. It contains articles on "Web development, user interfaces, Ruby on Rails, and other development topics."
 
-Install this starter (assuming Gatsby is installed) by running from your CLI:
-```
-gatsby new gatsby-example-site
-```
-
-## Deploy
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-default)
+Built on [Gatsby](https://www.gatsbyjs.org).
