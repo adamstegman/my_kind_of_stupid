@@ -6,6 +6,24 @@ module.exports = {
   plugins: [
     'gatsby-plugin-react-helmet',
     {
+      resolve: 'gatsby-plugin-favicon',
+      options: {
+        logo: "./src/assets/atom.png",
+        injectHTML: true,
+        icons: {
+          android: true,
+          appleIcon: true,
+          appleStartup: false,
+          coast: true,
+          favicons: true,
+          firefox: true,
+          twitter: true,
+          yandex: true,
+          windows: true,
+        },
+      },
+    },
+    {
       resolve: 'gatsby-plugin-typography',
       options: {
         pathToConfigModule: 'src/utils/typography.js',
