@@ -1,7 +1,11 @@
 import Typography from "typography";
+import CodePlugin from "typography-plugin-code";
 import theme from "typography-theme-lincoln";
 
 const linkColor = '#134896';
+theme.plugins = [
+  new CodePlugin(),
+];
 theme.overrideThemeStyles = (vr, options, styles) => ({
   // Allow configuration of link color when theming
   a: {

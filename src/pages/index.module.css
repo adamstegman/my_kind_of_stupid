@@ -1,0 +1,13 @@
+.article-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.article-item {
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 0.79rem;
+}
+.article-item:last-child {
+  border-bottom: none;
+}
