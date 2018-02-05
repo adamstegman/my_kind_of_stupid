@@ -10,11 +10,10 @@ const TemplateWrapper = ({ children, data }) => (
     <Helmet
       title={data.site.siteMetadata.title}
       meta={[
-        { name: 'description', content: '' },
-        { name: 'keywords', content: '' },
+        { name: 'description', content: data.site.siteMetadata.description },
       ]}
     />
-  <Header title={data.site.siteMetadata.title} />
+    <Header title={data.site.siteMetadata.title} subtitle={data.site.siteMetadata.description} />
     {children()}
     <Footer />
   </div>
@@ -31,6 +30,7 @@ export const query = graphql`
     site {
       siteMetadata {
         title
+        description
       }
     }
   }

@@ -20,7 +20,7 @@ class Header extends React.Component {
                 {this.props.title}
               </Link>
             </h1>
-            <h2 className={styles.h2}>Senior Software Engineer</h2>
+            <h2 className={styles.h2}>{this.props.subtitle}</h2>
           </hgroup>
           <nav>
             <ul className={styles['nav-list']}>

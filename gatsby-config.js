@@ -1,6 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: 'My Kind of Stupid',
+    description: 'Web development, user interfaces, and other development topics.',
   },
   plugins: [
     'gatsby-plugin-react-helmet',
