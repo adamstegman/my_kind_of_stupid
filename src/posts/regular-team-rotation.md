@@ -1,6 +1,6 @@
 ---
 title: Regular Team Rotation
-created_at: 2017-07-05T17:00Z
+date: 2017-07-05T17:00Z
 ---
 On large software projects, communication is key. There are so many ways we can try to facilitate regular communication between engineering teams, but I believe one of the best is regular rotation of engineers between the teams. Working on a new team fosters knowledge sharing, shared ownership and responsibility, better technical decisions, and builds communication and technical skills for each of the engineers.
 

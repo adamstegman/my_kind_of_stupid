@@ -26,7 +26,7 @@ export default IndexPage;
 
 export const query = graphql`
   query ArticlesQuery {
-    allMarkdownRemark(sort: { fields: [frontmatter___created_at], order: DESC }) {
+    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
       edges {
         node {
           html
@@ -35,8 +35,8 @@ export const query = graphql`
             post {
               title
               link
-              createdAtTimestamp: createdAt
-              createdAt(formatString: "MMMM D, YYYY h:mma z")
+              timestamp: date
+              date(formatString: "MMMM D, YYYY h:mma z")
             }
           }
         }

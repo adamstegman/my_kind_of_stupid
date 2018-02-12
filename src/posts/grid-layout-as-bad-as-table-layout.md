@@ -1,6 +1,6 @@
 ---
 title: Grid Layout As Bad As Table Layout?
-created_at: 2010-07-17T05:06Z
+date: 2010-07-17T05:06Z
 ---
 The more I think about this, the more this statement bothers me. [@tavon][@tavon] said that grid layouts like [960 grid][960gs] are as bad as table layouts. His reasoning was that the classes are purely presentational; it's presentation affecting markup the same way tables used to.
 

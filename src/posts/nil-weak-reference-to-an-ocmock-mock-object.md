@@ -1,6 +1,6 @@
 ---
 title: Nil Weak Reference to an OCMock Mock Object
-created_at: 2012-01-02T21:55Z
+date: 2012-01-02T21:55Z
 ---
 While I was working on unit tests for [Git Push][git push], I wanted to mock my
 delegate so I could create an expectation. So I used [OCMock][ocmock]:

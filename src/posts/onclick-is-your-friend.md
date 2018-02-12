@@ -1,7 +1,7 @@
 ---
 title: onclick is Your Friend
 link: http://thenerdary.net/articles/entry/onclick-is-your-friend
-created_at: 2010-06-21T23:00Z
+date: 2010-06-21T23:00Z
 ---
 Mark asserts that while using onclick is frowned upon, it's faster and cleaner:
 

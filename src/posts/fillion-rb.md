@@ -1,7 +1,7 @@
 ---
 title: fillion.rb
 link: https://gist.github.com/1174851
-created_at: 2011-08-27T01:48Z
+date: 2011-08-27T01:48Z
 ---
 Yesterday Nathan Fillion [tweeted][tweet] about finding a permutation of his name on a website. At first I just chuckled, but it soon occurred to me that this would be a fun problem to solve with scripting.
 

@@ -1,7 +1,7 @@
 ---
 title: Read Link Later
 link: https://chrome.google.com/extensions/detail/mffbgadohiiggcibdgmogfdlmackfbhm
-created_at: 2010-08-16T04:35Z
+date: 2010-08-16T04:35Z
 ---
 I'm excited to publish my first Google Chrome extension, Read Link Later. From the detail page:
 

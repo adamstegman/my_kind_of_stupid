@@ -1,6 +1,6 @@
 ---
 title: Complex Associations with factory_girl
-created_at: 2010-08-18T19:00Z
+date: 2010-08-18T19:00Z
 ---
 [`factory_girl`][factory_girl] is great for DRYing up test code and making tests isolated and maintainable. What it's not so great at is any [association][associations] more complicated than `has_one`/`belongs_to`. I found [a nice trick on Stack Overflow][stack_overflow] for `has_many` associations.
 

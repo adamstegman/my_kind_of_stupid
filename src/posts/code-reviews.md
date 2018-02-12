@@ -1,7 +1,7 @@
 ---
 title: Code Reviews
 link: http://raganwald.posterous.com/a-conjecture-about-code-reviews
-created_at: 2012-10-05T00:20Z
+date: 2012-10-05T00:20Z
 ---
 > Imagine if we didn’t judge the author of the code by how few “WTFs” it generated, but instead by how fertile it was
 > for discussion? Or, imagine if every programmer was being judged by what they learned from the discussion. How would

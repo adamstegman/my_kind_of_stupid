@@ -1,7 +1,7 @@
 ---
 title: Read Link Later Works With New Twitter
 link: https://chrome.google.com/extensions/detail/mffbgadohiiggcibdgmogfdlmackfbhm
-created_at: 2010-10-20T12:27Z
+date: 2010-10-20T12:27Z
 ---
 Version 1.1.0 of Read Link Later now works with New Twitter. Rejoice!
 

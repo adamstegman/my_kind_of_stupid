@@ -1,6 +1,6 @@
 ---
 title: Launchd Gem Servers on OS X
-created_at: 2015-04-21T04:29Z
+date: 2015-04-21T04:29Z
 ---
 Usually when I need documentation for a RubyGem I'm working with, I go to [RubyDoc.info][].
 Today, however, it was not responding.

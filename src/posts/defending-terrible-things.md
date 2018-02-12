@@ -1,7 +1,7 @@
 ---
 title: Defending Terrible Things
 link: http://garann.wordpress.com/2010/06/19/defending-terrible-things/
-created_at: 2010-06-20T05:14Z
+date: 2010-06-20T05:14Z
 ---
 > You know what would annoy the shit out of me if I were using a screen reader to read a bibliography on the internet?
 > Listening to a goofy-sounding computer voice try to emphasize every single word of *Journal of the Study of Obscure

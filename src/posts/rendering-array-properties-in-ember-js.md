@@ -1,6 +1,6 @@
 ---
 title: Rendering array properties in Ember.js
-created_at: 2014-08-23T23:39Z
+date: 2014-08-23T23:39Z
 ---
 While working on photo uploads in my [latest project][], I needed a network activity indicator to reflect background network usage.
 That way, users could navigate away from the upload form and see that uploads were still going in the background.

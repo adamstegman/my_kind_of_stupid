@@ -1,6 +1,6 @@
 ---
 title: TIL, Grails edition
-created_at: 2011-07-21T17:38Z
+date: 2011-07-21T17:38Z
 ---
 I’ve unfortunately been experiencing the magic of Grails lately.
 

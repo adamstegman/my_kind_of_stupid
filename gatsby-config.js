@@ -2,6 +2,7 @@ module.exports = {
   siteMetadata: {
     title: 'My Kind of Stupid',
     description: 'Web development, user interfaces, and other development topics.',
+    siteUrl: 'http://blog.adamstegman.com'
   },
   plugins: [
     {
@@ -13,6 +14,38 @@ module.exports = {
     },
 
     'gatsby-plugin-react-helmet',
+    {
+      resolve: 'gatsby-plugin-feed',
+      options: {
+        feeds: [
+          {
+            output: "/feed.xml",
+            query: `
+              {
+                allMarkdownRemark(
+                  limit: 1000,
+                  sort: { order: DESC, fields: [frontmatter___date] }
+                ) {
+                  edges {
+                    node {
+                      excerpt
+                      html
+                      frontmatter {
+                        title
+                        date
+                      }
+                      fields {
+                        slug
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+          },
+        ],
+      },
+    },
     {
       resolve: 'gatsby-plugin-favicon',
       options: {

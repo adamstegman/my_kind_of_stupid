@@ -1,6 +1,6 @@
 ---
 title: "JRuby NameError: missing class or uppercase package name"
-created_at: 2013-04-13T19:43Z
+date: 2013-04-13T19:43Z
 ---
 Originally posted as a [gist][gist] in response to [this twitter conversation][twitter].
 

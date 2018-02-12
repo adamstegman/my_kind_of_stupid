@@ -1,6 +1,6 @@
 ---
 title: URL-Driven Development is README-Driven Development
-created_at: 2011-08-06T19:42Z
+date: 2011-08-06T19:42Z
 ---
 While working on [Web Queue][web_queue] today I went to document the URLs to
 help me figure out the interface. As I was about to start writing out the URLs,

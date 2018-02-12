@@ -17,7 +17,7 @@ exports.onCreateNode = ({ node, getNode, boundActionCreators }) => {
     const post = {
       title: node.frontmatter.title,
       link: node.frontmatter.link,
-      createdAt: node.frontmatter.created_at,
+      date: node.frontmatter.date,
     };
     createNodeField({ node, name: 'post', value: post });
   }

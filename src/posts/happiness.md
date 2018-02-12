@@ -1,6 +1,6 @@
 ---
 title: Happiness
-created_at: 2010-08-07T03:17Z
+date: 2010-08-07T03:17Z
 ---
 [iwasamonkey][source]:
 

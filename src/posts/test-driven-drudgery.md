@@ -1,6 +1,6 @@
 ---
 title: Test-Driven Drudgery
-created_at: 2011-01-05T21:56Z
+date: 2011-01-05T21:56Z
 ---
 I'll admit it. I hate test-driven development while I'm actually doing it. It's boring and tedious. I get lost in details while trying to get some test to work. Maybe I just need to do more [katas][], but it gets old fast.
 

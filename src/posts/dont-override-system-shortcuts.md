@@ -1,6 +1,6 @@
 ---
 title: Don't Override System Shortcuts
-created_at: 2010-06-29T14:31Z
+date: 2010-06-29T14:31Z
 ---
 UPDATE: After deleting and re-cloning RubyAMP, I was able to edit the shortcut. All good!
 

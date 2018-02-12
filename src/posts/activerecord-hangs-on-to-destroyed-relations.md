@@ -1,6 +1,6 @@
 ---
 title: ActiveRecord Hangs On to Destroyed Relations
-created_at: 2010-10-25T18:31Z
+date: 2010-10-25T18:31Z
 ---
 Rails' ActiveRecord has a nifty `#destroy` method that almost everyone already knows about. The documentation for `#destroy`[^1] helpfully states
 
@@ -20,7 +20,7 @@ Let's throw down with some sample code.
     end
 
     zengarden> thing = Thing.new
-    th=> #<Thing id: nil, name: nil, created_at: nil, updated_at: nil>
+    => #<Thing id: nil, name: nil, created_at: nil, updated_at: nil>
     zengarden> thing.save
     => true
     zengarden> thing.create_child :name => "Child"

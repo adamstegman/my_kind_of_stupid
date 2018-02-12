@@ -1,6 +1,6 @@
 ---
 title: NSTokenField failed to query display string for a represented object
-created_at: 2013-12-02T01:19Z
+date: 2013-12-02T01:19Z
 ---
 I created an [NSTokenField][] and everything worked great with strings as tokens.
 When I created a representative class to use instead, I ended up with an error message and a blank token field.

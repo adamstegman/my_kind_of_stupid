@@ -1,6 +1,6 @@
 ---
 title: Implementing a Mutable Subclass in Objective-C
-created_at: 2012-01-06T06:31Z
+date: 2012-01-06T06:31Z
 ---
 
 I'm writing a class in [Git Push][git push] to hold and fetch git blobs from

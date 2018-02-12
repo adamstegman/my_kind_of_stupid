@@ -19,8 +19,8 @@ export const query = graphql`
         post {
           title
           link
-          createdAtTimestamp: createdAt
-          createdAt(formatString: "MMMM D, YYYY h:mma z")
+          timestamp: date
+          date(formatString: "MMMM D, YYYY h:mma z")
         }
       }
     }

@@ -1,7 +1,7 @@
 ---
 title: GoboLinux
 link: http://www.gobolinux.org/
-created_at: 2010-08-03T15:19Z
+date: 2010-08-03T15:19Z
 ---
 [onethingwell][onethingwell]:
 

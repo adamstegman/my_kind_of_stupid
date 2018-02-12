@@ -1,6 +1,6 @@
 ---
 title: Silence Test::Unit tests
-created_at: 2011-04-19T04:20Z
+date: 2011-04-19T04:20Z
 ---
 I've written several tests that have the unfortunate side effect of writing to stdout or stderr, polluting my pretty stream of dots.
 
