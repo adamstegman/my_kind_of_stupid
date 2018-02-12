@@ -11,8 +11,7 @@ exports.onCreateNode = ({ node, getNode, boundActionCreators }) => {
   const { createNodeField } = boundActionCreators;
   if (node.internal.type === 'MarkdownRemark') {
     // trim trailing slash from slug
-    const slugPath = createFilePath({ node, getNode, basePath: 'posts' }).slice(0, -1);
-    const slug = `${slugPath}.html`;
+    const slug = createFilePath({ node, getNode, basePath: 'posts' }).slice(0, -1);
     createNodeField({ node, name: 'slug', value: slug });
     const post = {
       title: node.frontmatter.title,
@@ -24,7 +23,7 @@ exports.onCreateNode = ({ node, getNode, boundActionCreators }) => {
 };
 
 exports.createPages = ({ graphql, boundActionCreators }) => {
-  const { createPage } = boundActionCreators;
+  const { createPage, createRedirect } = boundActionCreators;
   const postTemplate = path.resolve('src/templates/post.js');
   return graphql(`
     {
@@ -48,7 +47,13 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
         path: node.fields.slug,
         component: postTemplate,
         context: { slug: node.fields.slug },
-      })
+      });
+      createRedirect({
+        fromPath: `${node.fields.slug}.html`,
+        isPermanent: true,
+        redirectInBrowser: true,
+        toPath: node.fields.slug,
+      });
     });
   });
 };
