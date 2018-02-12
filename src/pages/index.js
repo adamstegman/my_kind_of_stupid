@@ -14,7 +14,7 @@ const IndexPage = ({ data }) => {
         {posts.map((post, index) => (
           <li key={index} className={styles['article-item']}>
             <Post post={post} />
-            <Link className={styles.permalink} to={post.fields.post.slug}>Permalink</Link>
+            <Link className={styles.permalink} to={post.fields.slug}>Permalink</Link>
           </li>
         ))}
       </ol>
@@ -31,8 +31,8 @@ export const query = graphql`
         node {
           html
           fields {
+            slug
             post {
-              slug
               title
               link
               createdAtTimestamp: createdAt

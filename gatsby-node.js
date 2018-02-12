@@ -11,9 +11,10 @@ exports.onCreateNode = ({ node, getNode, boundActionCreators }) => {
   const { createNodeField } = boundActionCreators;
   if (node.internal.type === 'MarkdownRemark') {
     // trim trailing slash from slug
-    const slug = createFilePath({ node, getNode, basePath: 'posts' }).slice(0, -1);
+    const slugPath = createFilePath({ node, getNode, basePath: 'posts' }).slice(0, -1);
+    const slug = `${slugPath}.html`;
+    createNodeField({ node, name: 'slug', value: slug });
     const post = {
-      slug: `${slug}.html`,
       title: node.frontmatter.title,
       link: node.frontmatter.link,
       createdAt: node.frontmatter.created_at,
@@ -31,9 +32,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
         edges {
           node {
             fields {
-              post {
-                slug
-              }
+              slug
             }
           }
         }
@@ -46,9 +45,9 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
 
     result.data.allMarkdownRemark.edges.forEach(({ node }) => {
       createPage({
-        path: node.fields.post.slug,
+        path: node.fields.slug,
         component: postTemplate,
-        context: { slug: node.fields.post.slug },
+        context: { slug: node.fields.slug },
       })
     });
   });

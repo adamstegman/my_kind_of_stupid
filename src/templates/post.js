@@ -13,7 +13,7 @@ export default ({ data }) => (
 
 export const query = graphql`
   query PostQuery($slug: String!) {
-    markdownRemark(fields: { post: { slug: { eq: $slug } } }) {
+    markdownRemark(fields: { slug: { eq: $slug } }) {
       html
       fields {
         post {
