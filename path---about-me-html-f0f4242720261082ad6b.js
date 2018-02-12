@@ -1,0 +1,2 @@
+webpackJsonp([0x6d2c8b930e45],{402:function(e,t){e.exports={data:{markdownRemark:{html:"<p>I made an about.me page. At the very least, it will be a central repository for where to find me. Hopefully I can get a better background eventually.</p>",fields:{post:{title:"About.me",link:"http://about.me/adamstegman",publishedAtTimestamp:null,publishedAt:null}}}},pathContext:{slug:"/about-me.html"}}}});
+//# sourceMappingURL=path---about-me-html-f0f4242720261082ad6b.js.map

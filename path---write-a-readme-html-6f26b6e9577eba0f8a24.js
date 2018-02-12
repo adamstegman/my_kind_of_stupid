@@ -1,0 +1,2 @@
+webpackJsonp([0x7694254362ca],{433:function(e,t){e.exports={data:{markdownRemark:{html:"<p>Reading code documentation to understand a system is like learning how to drive by inspecting the washer fluid dispenser, then a spark plug, then the brake pads. Write a README.</p>",fields:{post:{title:"Write a README",link:null,publishedAtTimestamp:"2011-07-13T06:09Z",publishedAt:"July 13, 2011 6:09am UTC"}}}},pathContext:{slug:"/write-a-readme.html"}}}});
+//# sourceMappingURL=path---write-a-readme-html-6f26b6e9577eba0f8a24.js.map
