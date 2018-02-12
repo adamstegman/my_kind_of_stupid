@@ -4,7 +4,9 @@ date: 2011-02-10T03:31Z
 ---
 I'm working on reading emails sent from ActionMailer, and was noticing the weird form of what I thought was URL-encoding in an HTML section of a multipart email, e.g.
 
-    <html lang=3D"en">
+```html
+<html lang=3D"en">
+```
 
 I also noticed the line length and endings:
 

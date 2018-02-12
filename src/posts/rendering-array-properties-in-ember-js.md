@@ -11,17 +11,19 @@ For each element in the array, I rendered a network activity indicator.
 The concept was pretty straightforward and in a simple case worked fine.
 But when I removed an indicator after an upload was done, I got a strange error:
 
-    TypeError: Cannot read property 'destroy' of undefined
-        at Ember.CollectionView.Ember.ContainerView.extend.arrayWillChange (http://localhost:8888/assets/ember.js?body=true:23233:16)
-        at null._contentWillChange (http://localhost:8888/assets/ember.js?body=true:23140:10)
-        at sendEvent (http://localhost:8888/assets/ember.js?body=true:2302:14)
-        at notifyBeforeObservers (http://localhost:8888/assets/ember.js?body=true:2671:5)
-        at Object.propertyWillChange (http://localhost:8888/assets/ember.js?body=true:2497:3)
-        at set (http://localhost:8888/assets/ember.js?body=true:2763:15)
-        at Object.Ember.trySet (http://localhost:8888/assets/ember.js?body=true:2832:10)
-        at Object.Binding._sync (http://localhost:8888/assets/ember.js?body=true:6765:15)
-        at Object.DeferredActionQueues.flush (http://localhost:8888/assets/ember.js?body=true:5565:24)
-        at Object.Backburner.end (http://localhost:8888/assets/ember.js?body=true:5656:27)
+```
+TypeError: Cannot read property 'destroy' of undefined
+    at Ember.CollectionView.Ember.ContainerView.extend.arrayWillChange (http://localhost:8888/assets/ember.js?body=true:23233:16)
+    at null._contentWillChange (http://localhost:8888/assets/ember.js?body=true:23140:10)
+    at sendEvent (http://localhost:8888/assets/ember.js?body=true:2302:14)
+    at notifyBeforeObservers (http://localhost:8888/assets/ember.js?body=true:2671:5)
+    at Object.propertyWillChange (http://localhost:8888/assets/ember.js?body=true:2497:3)
+    at set (http://localhost:8888/assets/ember.js?body=true:2763:15)
+    at Object.Ember.trySet (http://localhost:8888/assets/ember.js?body=true:2832:10)
+    at Object.Binding._sync (http://localhost:8888/assets/ember.js?body=true:6765:15)
+    at Object.DeferredActionQueues.flush (http://localhost:8888/assets/ember.js?body=true:5565:24)
+    at Object.Backburner.end (http://localhost:8888/assets/ember.js?body=true:5656:27)
+```
 
 The stacktrace indicated the problem is when I `set` the new array of uploads.
 From the description of [`Ember.CollectionView`][CollectionView] it looked like the problem is with updating the rendered template from the array:
@@ -36,8 +38,10 @@ Since I was using a native JavaScript array, I was using native methods to add a
 I needed to use an `Ember.NativeArray` instead so that I could use it in my template.
 This is possible using `Ember.A` to wrap an array-like object:
 
-    this.set('uploadActivityIndicators', Ember.A([id]));
-    this.get('uploadActivityIndicators').removeObject(id);
+```javascript
+this.set('uploadActivityIndicators', Ember.A([id]));
+this.get('uploadActivityIndicators').removeObject(id);
+```
 
 From what I've read, this is typical of Ember—use Ember's replacements for native JavaScript concepts to avoid any surprises like this.
 This is one reason why some people prefer Angular or React.

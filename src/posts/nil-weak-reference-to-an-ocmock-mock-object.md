@@ -5,16 +5,20 @@ date: 2012-01-02T21:55Z
 While I was working on unit tests for [Git Push][git push], I wanted to mock my
 delegate so I could create an expectation. So I used [OCMock][ocmock]:
 
-    id delegate = [OCMockObject mockForProtocol:@protocol(MyDelegateProtocol)];
-    [[delegate expect] someMethod];
-    myClassIvar.connectionDelegate = delegate;
-    [myClassIvar someOtherMethod];
-    STAssertNoThrow([delegate verify], @"should have called someMethod on delegate");
+```objectivec
+id delegate = [OCMockObject mockForProtocol:@protocol(MyDelegateProtocol)];
+[[delegate expect] someMethod];
+myClassIvar.connectionDelegate = delegate;
+[myClassIvar someOtherMethod];
+STAssertNoThrow([delegate verify], @"should have called someMethod on delegate");
+```
 
 But found the assertion failing. I stepped into `#someOtherMethod` and discovered
 the delegate was nil. So I added
 
-    STAssertNotNil(myClassIvar.connectionDelegate, @"should have set delegate");
+```objectivec
+STAssertNotNil(myClassIvar.connectionDelegate, @"should have set delegate");
+```
 
 And watched that fail as well. Since Git Push is using [ARC][arc], I [read up
 on retain semantics][retaining] to see if I was missing something about local
@@ -25,24 +29,26 @@ I [posted about this issue on Stack Overflow][question] [^1], where Evan
 suggested that OCMock may be the issue. Sure enough, creating an explicit class
 conforming to my delegate protocol fixed the issue.
 
-    @interface MockDelegate : NSObject <MyDelegateProtocol>
-    @property (nonatomic, strong) NSNumber *called;
-    @end
-    @implementation MockDelegate
-    @synthesize called = _called;
-    - (void)someMethod {
-      _called = [NSNumber numberWithBool:YES];
-    }
-    @end
+```objectivec
+@interface MockDelegate : NSObject <MyDelegateProtocol>
+@property (nonatomic, strong) NSNumber *called;
+@end
+@implementation MockDelegate
+@synthesize called = _called;
+- (void)someMethod {
+  _called = [NSNumber numberWithBool:YES];
+}
+@end
 
-    @implementation MyClassTests
-    - (void)testSomeOtherMethod {
-      MockDelegate *delegate = [[MockDelegate alloc] init];
-      myClassIvar.connectionDelegate = delegate;
-      [myClassIvar someOtherMethod];
-      STAssertTrue([delegate.called boolValue], @"should have called someMethod on delegate");
-    }
-    @end
+@implementation MyClassTests
+- (void)testSomeOtherMethod {
+  MockDelegate *delegate = [[MockDelegate alloc] init];
+  myClassIvar.connectionDelegate = delegate;
+  [myClassIvar someOtherMethod];
+  STAssertTrue([delegate.called boolValue], @"should have called someMethod on delegate");
+}
+@end
+```
 
 I still don't understand why it was being deallocated, but it was definitely
 related to OCMock. I've isolated the issue in [a Github repo][arcmock] to make

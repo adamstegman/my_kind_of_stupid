@@ -6,15 +6,21 @@ I’ve unfortunately been experiencing the magic of Grails lately.
 
 TIL:
 
-    new JSONObject([key: []]) == new JSONObject([key: []])
+```groovy
+new JSONObject([key: []]) == new JSONObject([key: []])
+```
 
 and
 
-    new JSONArray([]) == new JSONArray([])
+```groovy
+new JSONArray([]) == new JSONArray([])
+```
 
 but
 
-    new JSONObject([key: new JSONArray([])]) != new JSONObject([key: new JSONArray([])])
+```groovy
+new JSONObject([key: new JSONArray([])]) != new JSONObject([key: new JSONArray([])])
+```
 
 This is so much fun.
 

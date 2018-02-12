@@ -13,6 +13,7 @@
     "gatsby-plugin-svgr": "^0.2.1",
     "gatsby-plugin-typography": "^1.7.10",
     "gatsby-remark-images": "^1.5.41",
+    "gatsby-remark-prismjs": "^1.2.14",
     "gatsby-source-filesystem": "^1.5.16",
     "gatsby-transformer-remark": "^1.7.30",
     "react-helmet": "^5.2.0",

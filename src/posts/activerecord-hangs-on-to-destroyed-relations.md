@@ -11,30 +11,34 @@ What is less clear is how it works when you call it on a relationship. To be sur
 
 Let's throw down with some sample code.
 
-    class Thing < ActiveRecord::Base
-      has_one :child
-    end
+```ruby
+class Thing < ActiveRecord::Base
+  has_one :child
+end
 
-    class Child < ActiveRecord::Base
-      belongs_to :thing
-    end
+class Child < ActiveRecord::Base
+  belongs_to :thing
+end
 
-    zengarden> thing = Thing.new
-    => #<Thing id: nil, name: nil, created_at: nil, updated_at: nil>
-    zengarden> thing.save
-    => true
-    zengarden> thing.create_child :name => "Child"
-    => #<Child id: 4, name: "Child", thing_id: 1,...>
-    zengarden> thing.child
-    => #<Child id: 4, name: "Child", thing_id: 1...>
-    zengarden> thing.child.destroy
-    => #<Child id: 4, name: "Child", thing_id: 1...>
-    zengarden> thing.child
-    => #<Child id: 4, name: "Child", thing_id: 1...>
+zengarden> thing = Thing.new
+=> #<Thing id: nil, name: nil, created_at: nil, updated_at: nil>
+zengarden> thing.save
+=> true
+zengarden> thing.create_child :name => "Child"
+=> #<Child id: 4, name: "Child", thing_id: 1,...>
+zengarden> thing.child
+=> #<Child id: 4, name: "Child", thing_id: 1...>
+zengarden> thing.child.destroy
+=> #<Child id: 4, name: "Child", thing_id: 1...>
+zengarden> thing.child
+=> #<Child id: 4, name: "Child", thing_id: 1...>
+```
 
 Arg. I just destroyed it! I don't want it hanging around in my cache. If I really wanted to save it, I should have saved it before or during the destroy call. I can of course invalidate my cache by calling
 
-    thing.child(true)
+```ruby
+thing.child(true)
+```
 
 which correctly returns nil. But if I don't know to do that immediately after the destroy, I get errors like
 
@@ -42,9 +46,11 @@ which correctly returns nil. But if I don't know to do that immediately after th
 
 because code used later naïvely calls
 
-    if thing.child
-      thing.child.attributes = new_attributes
-    end
+```ruby
+if thing.child
+  thing.child.attributes = new_attributes
+end
+```
 
 expecting that if a child exists, it should be updated.
 

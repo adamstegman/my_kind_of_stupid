@@ -6,29 +6,33 @@ date: 2012-01-06T06:31Z
 I'm writing a class in [Git Push][git push] to hold and fetch git blobs from
 [Github][github].
 
-    @interface GHBlob : NSObject <NSCopying, NSMutableCopying>
-    @property (nonatomic, copy, readonly) NSData *content;
-    ...
-    @end
+```objectivec
+@interface GHBlob : NSObject <NSCopying, NSMutableCopying>
+@property (nonatomic, copy, readonly) NSData *content;
+...
+@end
 
-    @implementation GHBlob
-    @synthesize content = _content;
-    ...
-    @end
+@implementation GHBlob
+@synthesize content = _content;
+...
+@end
+```
 
 To support creating and updating blobs, I wrote a mutable subclass initialized
 in #mutableCopy from [NSMutableCopying][nsmutablecopying]. This entailed
 redefining properties as `readwrite`:
 
-    @interface GHMutableBlob : GHBlob
-    @property (nonatomic, copy, readwrite) NSData *content;
-    ...
-    @end
+```objectivec
+@interface GHMutableBlob : GHBlob
+@property (nonatomic, copy, readwrite) NSData *content;
+...
+@end
 
-    @implementation GHMutableBlob
-    @synthesize content = _content;
-    ...
-    @end
+@implementation GHMutableBlob
+@synthesize content = _content;
+...
+@end
+```
 
 ### Problems
 
@@ -37,9 +41,11 @@ redefining properties as `readwrite`:
 As shown above, I also re-synthesized the methods in the subclass. However,
 this resulted in the subclass's initializer breaking.
 
-    GHBlob *newBlob = [blob mutableCopy];
-    STAssertEquals(newBlob.content, blob.content, nil);
-      //=> '<00000000>' should be equal to '<10cbb806>'
+```objectivec
+GHBlob *newBlob = [blob mutableCopy];
+STAssertEquals(newBlob.content, blob.content, nil);
+  //=> '<00000000>' should be equal to '<10cbb806>'
+```
 
 On review, I noticed something I'd missed before in
 [Apple's documentation on redeclaring properties][apple]. The redeclared
@@ -62,29 +68,33 @@ subclass. I thought the property/synthesize syntax was
 [saving me the trouble][synthesis], but apparently it's not all rainbows and
 unicorns.
 
-    @interface GHBlob : NSObject <NSCopying, NSMutableCopying> {
-      NSData *_content;
-    }
-    @property (nonatomic, copy, readonly) NSData *content;
-    ...
-    @end
+```objectivec
+@interface GHBlob : NSObject <NSCopying, NSMutableCopying> {
+  NSData *_content;
+}
+@property (nonatomic, copy, readonly) NSData *content;
+...
+@end
 
-    @implementation GHBlob
-    @synthesize content = _content;
-    @end
+@implementation GHBlob
+@synthesize content = _content;
+@end
+```
 
 And in the mutable subclass:
 
-    @interface GHMutableBlob : GHBlob
-    @property (nonatomic, copy, readwrite) NSData *content;
-    ...
-    @end
+```objectivec
+@interface GHMutableBlob : GHBlob
+@property (nonatomic, copy, readwrite) NSData *content;
+...
+@end
 
-    @implementation GHMutableBlob
-    @dynamic content;
-    - (void)setContent:(NSData *)content {
-      _content = [content copy];
-    }
+@implementation GHMutableBlob
+@dynamic content;
+- (void)setContent:(NSData *)content {
+  _content = [content copy];
+}
+```
 
 [apple]: http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocProperties.html
 [arc]: http://developer.apple.com/technologies/ios5/
