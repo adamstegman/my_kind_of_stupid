@@ -7,6 +7,9 @@
 .splash {
   background: var(--splash-background-color);
 }
+.splash-border {
+  border-color: var(--splash-color);
+}
 .splash-text {
   color: var(--splash-color);
 }

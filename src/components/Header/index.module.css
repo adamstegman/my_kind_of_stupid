@@ -29,18 +29,6 @@
   text-shadow: none;
 }
 
-.nav-list {
-  display: flex;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-.nav-item {
-  margin: 0 1rem;
-}
-.nav-item:first-child {
-  margin-left: 0;
-}
 .nav-link {
   composes: splash-link from '../../layouts/index.module.css';
   text-shadow: none;

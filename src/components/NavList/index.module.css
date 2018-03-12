@@ -1,0 +1,45 @@
+.button {
+  composes: splash-border from '../../layouts/index.module.css';
+  background-color: transparent;
+  border-width: 1px;
+  padding: 0.39rem;
+}
+.button-text {
+  composes: splash-text from '../../layouts/index.module.css';
+  font-size: 1rem;
+  margin: 0;
+}
+.menu-hidden {
+  display: none;
+}
+
+.list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.item {
+  margin: 1rem 0;
+}
+.item:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 32rem) {
+  .button {
+    display: none;
+  }
+  .menu-hidden {
+    display: block;
+  }
+
+  .list {
+    display: flex;
+  }
+  .item {
+    margin: 0 1rem;
+  }
+  .item:first-child {
+    margin-left: 0;
+  }
+}
