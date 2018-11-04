@@ -1,11 +1,11 @@
 .button {
-  composes: splash-border from '../../layouts/index.module.css';
+  composes: splashBorder from '../Layout/index.module.css';
   background-color: transparent;
   border-width: 1px;
   padding: 0.39rem;
 }
 .button-text {
-  composes: splash-text from '../../layouts/index.module.css';
+  composes: splashText from '../Layout/index.module.css';
   font-size: 1rem;
   margin: 0;
 }

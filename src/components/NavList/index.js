@@ -14,24 +14,24 @@ class NavList extends React.Component {
   }
 
   render() {
-    const navListClassNames = [styles['list']];
+    const navListClassNames = [styles.list];
     if (!this.state.expanded) {
-      navListClassNames.push(styles['menu-hidden']);
+      navListClassNames.push(styles.menuHidden);
     }
 
     return (
       <nav>
         <button aria-expanded={this.state.expanded}
                 aria-controls="nav-list"
-                className={styles['button']}
+                className={styles.button}
                 onClick={this.toggle}>
-          <h3 className={styles['button-text']}>
+          <h3 className={styles.buttonText}>
             {this.state.expanded ? 'Hide' : 'Show'} Navigation
           </h3>
         </button>
         <ul id="nav-list" className={navListClassNames.join(' ')}>
           {this.props.children.map((link, index) =>
-            <li key={index} className={styles['item']} onClick={this.toggle}>{link}</li>
+            <li key={index} className={styles.item} onClick={this.toggle}>{link}</li>
           )}
         </ul>
       </nav>

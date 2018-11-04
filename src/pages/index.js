@@ -1,7 +1,7 @@
 import React from 'react';
-import Link from 'gatsby-link';
-
+import { Link, graphql } from 'gatsby';
 import Container from '../components/Container';
+import Layout from '../components/Layout';
 import Post from '../components/Post';
 import styles from './index.module.css';
 
@@ -9,23 +9,25 @@ const IndexPage = ({ data }) => {
   const posts = data.allMarkdownRemark.edges.reduce((acc, { node }) => acc.concat(node), []);
 
   return (
-    <Container>
-      <ol className={styles['article-list']}>
-        {posts.map((post, index) => (
-          <li key={index} className={styles['article-item']}>
-            <Post post={post} />
-            <Link className={styles.permalink} to={post.fields.slug}>Permalink</Link>
-          </li>
-        ))}
-      </ol>
-    </Container>
+    <Layout>
+      <Container>
+        <ol className={styles.articleList}>
+          {posts.map((post, index) => (
+            <li key={index} className={styles.articleItem}>
+              <Post post={post} />
+              <Link className={styles.permalink} to={post.fields.slug}>Permalink</Link>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </Layout>
   );
 };
 
 export default IndexPage;
 
 export const query = graphql`
-  query ArticlesQuery {
+  {
     allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
       edges {
         node {

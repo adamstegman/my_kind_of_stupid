@@ -14,5 +14,5 @@ theme.overrideThemeStyles = (vr, options, styles) => ({
   },
 });
 const typography = new Typography(theme);
-
-export default typography;
+const { rhythm, scale } = typography;
+export { rhythm, scale, typography as default };

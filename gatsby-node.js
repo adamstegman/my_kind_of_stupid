@@ -7,8 +7,8 @@
 const path = require('path');
 const { createFilePath } = require(`gatsby-source-filesystem`);
 
-exports.onCreateNode = ({ node, getNode, boundActionCreators }) => {
-  const { createNodeField } = boundActionCreators;
+exports.onCreateNode = ({ node, getNode, actions }) => {
+  const { createNodeField } = actions;
   if (node.internal.type === 'MarkdownRemark') {
     // trim trailing slash from slug
     const slug = createFilePath({ node, getNode, basePath: 'posts' }).slice(0, -1);
@@ -22,8 +22,8 @@ exports.onCreateNode = ({ node, getNode, boundActionCreators }) => {
   }
 };
 
-exports.createPages = ({ graphql, boundActionCreators }) => {
-  const { createPage, createRedirect } = boundActionCreators;
+exports.createPages = ({ graphql, actions }) => {
+  const { createPage, createRedirect } = actions;
   const postTemplate = path.resolve('src/templates/post.js');
   return graphql(`
     {
