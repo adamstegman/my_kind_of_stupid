@@ -21,6 +21,9 @@
 .item {
   margin: 1rem 0;
 }
+.item-button {
+  composes: buttonText from '../Layout/index.module.css';
+}
 .item:last-child {
   margin-bottom: 0;
 }

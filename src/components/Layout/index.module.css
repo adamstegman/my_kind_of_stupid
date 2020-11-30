@@ -21,3 +21,8 @@
   background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 1px, var(--link-color) 1px, var(--link-color) 2px, rgba(0, 0, 0, 0) 2px);
   color: var(--link-color);
 }
+.button-text {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}

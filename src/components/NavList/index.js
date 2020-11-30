@@ -31,7 +31,9 @@ class NavList extends React.Component {
         </button>
         <ul id="nav-list" className={navListClassNames.join(' ')}>
           {this.props.children.map((link, index) =>
-            <li key={index} className={styles.item} onClick={this.toggle}>{link}</li>
+            <li key={index} className={styles.item}>
+              <button className={styles.itemButton} onClick={this.toggle}>{link}</button>
+            </li>
           )}
         </ul>
       </nav>
