@@ -1,1 +1,5 @@
-{"componentChunkName":"component---src-templates-post-js","path":"/write-a-readme","result":{"data":{"markdownRemark":{"html":"<p>Reading code documentation to understand a system is like learning how to drive by inspecting the washer fluid dispenser, then a spark plug, then the brake pads. Write a README.</p>","fields":{"post":{"title":"Write a README","link":null,"timestamp":"2011-07-13T06:09Z","date":"July 13, 2011 6:09am UTC"}}}},"pageContext":{"slug":"/write-a-readme"}},"staticQueryHashes":["2468095761"]}
+{
+    "componentChunkName": "component---src-templates-post-js",
+    "path": "/write-a-readme",
+    "result": {"data":{"markdownRemark":{"html":"<p>Reading code documentation to understand a system is like learning how to drive by inspecting the washer fluid dispenser, then a spark plug, then the brake pads. Write a README.</p>","fields":{"post":{"title":"Write a README","link":null,"timestamp":"2011-07-13T06:09Z","date":"July 13, 2011 6:09am UTC"}}}},"pageContext":{"slug":"/write-a-readme"}},
+    "staticQueryHashes": ["2468095761"]}
