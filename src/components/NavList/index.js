@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from './index.module.css';
+import { button, buttonText, item, itemButton, list, menuHidden } from './index.module.css';
 
 class NavList extends React.Component {
   constructor(props) {
@@ -14,25 +14,25 @@ class NavList extends React.Component {
   }
 
   render() {
-    const navListClassNames = [styles.list];
+    const navListClassNames = [list];
     if (!this.state.expanded) {
-      navListClassNames.push(styles.menuHidden);
+      navListClassNames.push(menuHidden);
     }
 
     return (
       <nav>
         <button aria-expanded={this.state.expanded}
                 aria-controls="nav-list"
-                className={styles.button}
+                className={button}
                 onClick={this.toggle}>
-          <h3 className={styles.buttonText}>
+          <h3 className={buttonText}>
             {this.state.expanded ? 'Hide' : 'Show'} Navigation
           </h3>
         </button>
         <ul id="nav-list" className={navListClassNames.join(' ')}>
           {this.props.children.map((link, index) =>
-            <li key={index} className={styles.item}>
-              <button className={styles.itemButton} onClick={this.toggle}>{link}</button>
+            <li key={index} className={item}>
+              <button className={itemButton} onClick={this.toggle}>{link}</button>
             </li>
           )}
         </ul>

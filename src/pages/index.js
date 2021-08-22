@@ -3,7 +3,7 @@ import { Link, graphql } from 'gatsby';
 import Container from '../components/Container';
 import Layout from '../components/Layout';
 import Post from '../components/Post';
-import styles from './index.module.css';
+import { articleItem, articleList, permalink } from './index.module.css';
 
 const IndexPage = ({ data }) => {
   const posts = data.allMarkdownRemark.edges.reduce((acc, { node }) => acc.concat(node), []);
@@ -11,11 +11,11 @@ const IndexPage = ({ data }) => {
   return (
     <Layout>
       <Container>
-        <ol className={styles.articleList}>
+        <ol className={articleList}>
           {posts.map((post, index) => (
-            <li key={index} className={styles.articleItem}>
+            <li key={index} className={articleItem}>
               <Post post={post} />
-              <Link className={styles.permalink} to={post.fields.slug}>Permalink</Link>
+              <Link className={permalink} to={post.fields.slug}>Permalink</Link>
             </li>
           ))}
         </ol>

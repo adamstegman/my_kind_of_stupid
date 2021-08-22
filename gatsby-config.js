@@ -1,4 +1,7 @@
 module.exports = {
+  flags: {
+    DEV_SSR: false,
+  },
   siteMetadata: {
     title: 'My Kind of Stupid',
     description: 'Web development, user interfaces, and other development topics.',
@@ -47,20 +50,14 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-plugin-favicon',
+      resolve: `gatsby-plugin-manifest`,
       options: {
-        logo: "./src/assets/atom.png",
-        icons: {
-          android: true,
-          appleIcon: true,
-          appleStartup: false,
-          coast: true,
-          favicons: true,
-          firefox: true,
-          twitter: true,
-          yandex: true,
-          windows: true,
-        },
+        name: `My Kind of Stupid`,
+        start_url: `/`,
+        background_color: `#fff`,
+        theme_color: `#0288D1`,
+        display: `browser`,
+        icon: `src/assets/atom.png`,
       },
     },
     {

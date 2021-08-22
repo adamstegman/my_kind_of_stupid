@@ -5,8 +5,6 @@ import { StaticQuery, graphql } from 'gatsby';
 import Header from '../Header';
 import Footer from '../Footer';
 
-require("prismjs/themes/prism-okaidia.css");
-
 const TemplateWrapper = ({ children, data }) => (
   <StaticQuery
     query={graphql`

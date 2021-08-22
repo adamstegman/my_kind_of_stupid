@@ -5,7 +5,7 @@ import Container from '../components/Container';
 import Layout from '../components/Layout';
 import Post from '../components/Post';
 
-export default ({ data }) => (
+const post = ({ data }) => (
   <Layout>
     <Container>
       <Helmet title={`${data.markdownRemark.fields.post.title} - Adam Stegman`}></Helmet>
@@ -13,6 +13,7 @@ export default ({ data }) => (
     </Container>
   </Layout>
 )
+export default post;
 
 export const query = graphql`
   query($slug: String!) {

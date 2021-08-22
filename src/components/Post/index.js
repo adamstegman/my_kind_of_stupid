@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PostTimestamp from '../PostTimestamp';
-import styles from './index.module.css';
+import { body } from './index.module.css';
 
 class Post extends React.Component {
   render() {
@@ -15,7 +15,7 @@ class Post extends React.Component {
     return (
       <article>
         <h2>{title}</h2>
-        <section className={styles.body} dangerouslySetInnerHTML={{ __html: this.props.post.html }}></section>
+        <section className={body} dangerouslySetInnerHTML={{ __html: this.props.post.html }}></section>
         <footer>
           <PostTimestamp post={post} />
         </footer>
