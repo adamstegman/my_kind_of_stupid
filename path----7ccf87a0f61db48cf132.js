@@ -1,2 +1,0 @@
-webpackJsonp([60335399758886],{116:function(e,t){e.exports={data:{site:{siteMetadata:{title:"My Kind of Stupid",description:"Web development, user interfaces, and other development topics."}}},layoutContext:{}}}});
-//# sourceMappingURL=path----7ccf87a0f61db48cf132.js.map

@@ -1,2 +1,0 @@
-webpackJsonp([70514772454468],{408:function(t,o){t.exports={data:{markdownRemark:{html:"<p>And no one wants to put in that much work.</p>",fields:{post:{title:"Comments are hard work.",link:"http://powazek.com/posts/1063",timestamp:"2010-06-17T15:13Z",date:"June 17, 2010 3:13pm UTC"}}}},pathContext:{slug:"/comments-are-hard-work"}}}});
-//# sourceMappingURL=path---comments-are-hard-work-7d27527311fa4c1c7885.js.map
