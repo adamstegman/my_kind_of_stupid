@@ -1,7 +1,4 @@
 module.exports = {
-  flags: {
-    DEV_SSR: false,
-  },
   siteMetadata: {
     title: 'My Kind of Stupid',
     description: 'Web development, user interfaces, and other development topics.',
