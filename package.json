@@ -5,7 +5,7 @@
   "author": "Adam Stegman <me@adamstegman.com>",
   "dependencies": {
     "@svgr/webpack": "^5.5.0",
-    "gatsby": "^4.12.1",
+    "gatsby": "^4.24.7",
     "gatsby-plugin-feed": "^4.12.1",
     "gatsby-plugin-manifest": "^4.12.1",
     "gatsby-plugin-react-helmet": "^5.12.1",
