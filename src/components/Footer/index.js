@@ -12,13 +12,13 @@ const Footer = () => (
       <nav>
         <ul className={navList}>
           <li className={navItem}>
+            <a href="//status.adamstegman.com" className={navLink}>Current status</a>
+          </li>
+          <li className={navItem}>
             <a href="//twitter.com/adamstegman" className={navLink}>Follow me on Twitter</a>
           </li>
           <li className={navItem}>
-            <a href="//github.com/adamstegman" className={navLink}>Follow me on Github</a>
-          </li>
-          <li className={navItem}>
-            <a href="//profiles.google.com/adam.stegman" rel="me" className={navLink}>Google Profile</a>
+            <a href="//github.com/adamstegman" className={navLink} rel="me">Follow me on Github</a>
           </li>
           <li className={navItem}>
             <a href="mailto:me@adamstegman.com" className={navLink}>Email me</a>
