@@ -27,7 +27,7 @@ class Header extends React.Component {
             <Link to="/" className={navLink}>Articles</Link>
             <a href="//adamstegman.com" className={navLink}>Adam Stegman</a>
             <a href="//twitter.com/adamstegman" className={navLink}>Twitter</a>
-            <a href="//github.com/adamstegman" className={navLink}>Github</a>
+            <a href="//github.com/adamstegman" className={navLink} rel="me">Github</a>
           </NavList>
         </Container>
       </header>
