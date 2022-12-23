@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link, graphql } from 'gatsby';
+import 'regenerator-runtime/runtime';
+
 import Container from '../components/Container';
 import Layout from '../components/Layout';
 import Post from '../components/Post';
