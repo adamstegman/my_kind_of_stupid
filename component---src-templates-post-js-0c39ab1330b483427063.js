@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkmy_kind_of_stupid=self.webpackChunkmy_kind_of_stupid||[]).push([[851],{2396:function(e,t,n){n.r(t);var a=n(7294),l=n(4593),r=n(2574),m=n(1019),u=n(1680);t.default=function(e){var t=e.data;return a.createElement(m.Z,null,a.createElement(r.Z,null,a.createElement(l.Z,{title:"".concat(t.markdownRemark.fields.post.title," - Adam Stegman")}),a.createElement(u.Z,{post:t.markdownRemark})))}}}]);
+//# sourceMappingURL=component---src-templates-post-js-0c39ab1330b483427063.js.map
